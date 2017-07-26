@@ -5,7 +5,12 @@
   "keywords": [
     "Decoder.flow",
     "typed",
-    "flow"
+    "flow",
+    "JSON",
+    "decode",
+    "parse",
+    "marshall",
+    "structure"
   ],
   "main": "lib/Decoder",
   "module": "src/Decoder",
@@ -39,10 +44,7 @@
     "start": "flow-copy-source --watch --verbose src lib & babel --watch --out-dir lib src"
   },
   "lint-staged": {
-    "*.js": [
-      "prettier --parser flow --no-semi --write",
-      "git add"
-    ]
+    "*.js": ["prettier --parser flow --no-semi --write", "git add"]
   },
   "dependencies": {
     "corrupt": "^0.1.1",
