@@ -14,6 +14,10 @@ export default class AccessorCodec<a> implements AccessorDecoder<a> {
   type: "Accessor" = "Accessor"
   name: string
   accessor: Decoder<a>
+  constructor(name: string, decoder: Decoder<a>) {
+    this.name = name
+    this.accessor = decoder
+  }
   static decode(input: mixed, codec: AccessorDecoder<a>): Decode<a> {
     const { name, accessor } = codec
     if (typeof input === "object" && input != null && name in input) {

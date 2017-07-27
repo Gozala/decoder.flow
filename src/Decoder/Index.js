@@ -14,14 +14,15 @@ export default class Index<a> implements IndexDecoder<a> {
   type: "Index" = "Index"
   index: number
   member: Decoder<a>
+  constructor(index: number, member: Decoder<a>) {
+    this.index = index
+    this.member = member
+  }
   static decode(input: mixed, { index, member }: IndexDecoder<a>): Decode<a> {
     if (!Array.isArray(input)) {
       return new BadPrimitive("an array", input)
     } else if (index >= input.length) {
-      return new BadPrimitive(
-        `a longer array. Need index ${index} but there are only ${input.length}  entries`,
-        input
-      )
+      return new BadPrimitive(`a longer (>=${index + 1}) array`, input)
     } else {
       const value = decoder.decode(input[index], member)
       if (value instanceof Error) {

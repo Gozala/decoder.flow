@@ -35,5 +35,8 @@ const decode = Codec(<a>(input: mixed, self: DictionaryDecoder<a>): Decode<
 export default class DictionaryCodec<a> implements DictionaryDecoder<a> {
   type: "Dictionary" = "Dictionary"
   valueDecoder: Decoder<a>
+  constructor(decoder: Decoder<a>) {
+    this.valueDecoder = decoder
+  }
   static decode = decode
 }

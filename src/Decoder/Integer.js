@@ -27,6 +27,7 @@ const decode = Codec((input:mixed, decoder:Decoder<integer>):Decode<integer> => 
   }
 })
 
-export default class Integer {
+export default class Integer implements IntegerDecoder <integer> {
   static decode = decode
+  type:"Integer" = "Integer"
 }

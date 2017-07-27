@@ -37,5 +37,8 @@ const decode = Codec(<a>(input: mixed, self: EntriesDecoder<a>): Decode<
 export default class EntriesCodec<a> implements EntriesDecoder<a> {
   type: "Entries" = "Entries"
   entry: Decoder<a>
+  constructor(decoder: Decoder<a>) {
+    this.entry = decoder
+  }
   static decode = decode
 }

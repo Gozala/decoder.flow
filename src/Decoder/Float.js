@@ -27,6 +27,7 @@ const decode = Codec((input:mixed, decoder:Decoder<float>):Decode<float> => {
   }
 })
 
-export default class Float {
+export default class Float implements FloatDecoder <float> {
   static decode = decode
+  type:"Float" = "Float"
 }

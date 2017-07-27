@@ -18,6 +18,7 @@ const decode = Codec((input: mixed, _: Decoder<boolean>): Decode<boolean> => {
   }
 })
 
-export default class Boolean {
+export default class Boolean implements BooleanDecoder<boolean> {
   static decode = decode
+  type: "Boolean" = "Boolean"
 }

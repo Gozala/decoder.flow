@@ -5,15 +5,18 @@ import { BadPrimitive } from "./Error"
 
 export interface NullDecoder<a> {
   type: "Null",
-  fallback: a
+  Null: a
 }
 
 export default class Null<a> implements NullDecoder<a> {
   type: "Null" = "Null"
-  fallback: a
-  static decode(input: mixed, { fallback }: NullDecoder<a>): Decode<a> {
+  Null: a
+  constructor(Null: a) {
+    this.Null = Null
+  }
+  static decode(input: mixed, { Null }: NullDecoder<a>): Decode<a> {
     if (input === null) {
-      return fallback
+      return Null
     } else {
       return new BadPrimitive("null", input)
     }

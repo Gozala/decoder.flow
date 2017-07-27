@@ -31,5 +31,8 @@ const decode = Codec(
 export default class RecordCodec<a: {}> implements RecordDecoder<a> {
   type: "Record" = "Record"
   fields: Fields<a>
+  constructor(fields: Fields<a>) {
+    this.fields = fields
+  }
   static decode = decode
 }

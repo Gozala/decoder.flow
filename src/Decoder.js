@@ -6,123 +6,81 @@ import type { integer } from "./Decoder/Integer"
 import type { Entries } from "./Decoder/Entries"
 import type { Dictionary } from "./Decoder/Dictionary"
 import type { Record } from "./Decoder/Record"
-import type { Result } from "result.flow"
 
-import FloatCodec from "./Decoder/Float"
-import IntegerCodec from "./Decoder/Integer"
-import StringCodec from "./Decoder/String"
-import BooleanCodec from "./Decoder/Boolean"
-import MaybeCodec from "./Decoder/Maybe"
-import RecordCodec from "./Decoder/Record"
-import ArrayCodec from "./Decoder/Array"
-import AccessorCodec from "./Decoder/Accessor"
-import DictionaryCodec from "./Decoder/Dictionary"
-import EitherCodec from "./Decoder/Either"
-import EntriesCodec from "./Decoder/Entries"
-import FailCodec from "./Decoder/Fail"
-import FieldCodec from "./Decoder/Field"
-import NullCodec from "./Decoder/Null"
-import UndefinedCodec from "./Decoder/Undefined"
-import SucceedCodec from "./Decoder/Succeed"
-import IndexCodec from "./Decoder/Index"
+import StringDecoder from "./Decoder/String"
+import BooleanDecoder from "./Decoder/Boolean"
+import IntegerDecoder from "./Decoder/Integer"
+import FloatDecoder from "./Decoder/Float"
+import Maybe from "./Decoder/Maybe"
+import RecordDecoder from "./Decoder/Record"
+import ArrayDecoder from "./Decoder/Array"
+import Accessor from "./Decoder/Accessor"
+import DictionaryDecoder from "./Decoder/Dictionary"
+import Either from "./Decoder/Either"
+import EntriesDecoder from "./Decoder/Entries"
+import Fail from "./Decoder/Fail"
+import Field from "./Decoder/Field"
+import Null from "./Decoder/Null"
+import Undefined from "./Decoder/Undefined"
+import Succeed from "./Decoder/Succeed"
+import Index from "./Decoder/Index"
 import { Bad, Error } from "./Decoder/Error"
 
 import * as Reader from "./Decoder/Decoder"
-import { ok, error } from "result.flow"
+import * as result from "result.flow"
 
-export const decode = <a>(
-  input: mixed,
-  decoder: Decoder<a>
-): Result<Error, a> => {
+export type Result<a> = result.Result<Error, a>
+export type { Decoder, Decode, float, integer, Record, Dictionary, Entries }
+
+export const decode = <a>(input: mixed, decoder: Decoder<a>): Result<a> => {
   const value = Reader.decode(input, decoder)
   if (value instanceof Error) {
-    return error(value)
+    return result.error(value)
   } else {
-    return ok(value)
+    return result.ok(value)
   }
 }
 
-export const String: Decoder<string> = { type: "String" }
-export const Boolean: Decoder<boolean> = { type: "Boolean" }
-export const Integer: Decoder<integer> = { type: "Integer" }
-export const Float: Decoder<float> = { type: "Float" }
+export const String: Decoder<string> = new StringDecoder()
+export const Boolean: Decoder<boolean> = new BooleanDecoder()
+export const Integer: Decoder<integer> = new IntegerDecoder()
+export const Float: Decoder<float> = new FloatDecoder()
 
-export const fail = <a>(reason: string): Decoder<a> => {
-  const fail = new FailCodec()
-  fail.reason = reason
-  return fail
-}
+export const fail = <a>(reason: string): Decoder<a> => new Fail(reason)
 
-export const field = <a>(name: string, decoder: Decoder<a>): Decoder<a> => {
-  const field = new FieldCodec()
-  field.field = decoder
-  return field
-}
+export const field = <a>(name: string, decoder: Decoder<a>): Decoder<a> =>
+  new Field(name, decoder)
 
-export const index = <a>(index: number, decoder: Decoder<a>): Decoder<a> => {
-  const indexDecoder = new IndexCodec()
-  indexDecoder.index = index
-  indexDecoder.member = decoder
-  return indexDecoder
-}
+export const index = <a>(index: number, decoder: Decoder<a>): Decoder<a> =>
+  new Index(index, decoder)
 
 export const at = <a>(path: Array<string>, decoder: Decoder<a>): Decoder<a> =>
   path.reduce((decoder: Decoder<a>, name) => field(name, decoder), decoder)
 
-export const accessor = <a>(name: string, decoder: Decoder<a>): Decoder<a> => {
-  const accessor = new AccessorCodec()
-  accessor.name = name
-  accessor.accessor = decoder
-  return accessor
-}
+export const accessor = <a>(name: string, decoder: Decoder<a>): Decoder<a> =>
+  new Accessor(name, decoder)
 
 export const either = <a>(
   first: Decoder<a>,
   second: Decoder<a>,
   ...rest: Array<Decoder<a>>
-): Decoder<a> => {
-  const either = new EitherCodec()
-  either.either = [first, second, ...rest]
-  return either
-}
+): Decoder<a> => new Either([first, second, ...rest])
 
-export const maybe = <a>(decoder: Decoder<a>): Decoder<?a> => {
-  const maybe = new MaybeCodec()
-  maybe.some = decoder
-  return maybe
-}
+export const maybe = <a>(decoder: Decoder<a>): Decoder<?a> => new Maybe(decoder)
 
-export const array = <a>(decoder: Decoder<a>): Decoder<a[]> => {
-  const array = new ArrayCodec()
-  array.elementDecoder = decoder
-  return array
-}
+export const array = <a>(decoder: Decoder<a>): Decoder<a[]> =>
+  new ArrayDecoder(decoder)
 
-export const dictionary = <a>(decoder: Decoder<a>): Decoder<Dictionary<a>> => {
-  const dictionary = new DictionaryCodec()
-  dictionary.valueDecoder = decoder
-  return dictionary
-}
+export const dictionary = <a>(decoder: Decoder<a>): Decoder<Dictionary<a>> =>
+  new DictionaryDecoder(decoder)
 
-export const entries = <a>(decoder: Decoder<a>): Decoder<Entries<a>> => {
-  const entries = new EntriesCodec()
-  entries.entry = decoder
-  return entries
-}
+export const entries = <a>(decoder: Decoder<a>): Decoder<Entries<a>> =>
+  new EntriesDecoder(decoder)
 
-export const record = <a: {}>(fields: a): Record<a> => {
-  const record = new RecordCodec()
-  record.fields = fields
-  return record
-}
+export const record = <a: {}>(fields: a): Record<a> => new RecordDecoder(fields)
 
-export const optional = <a>(decoder: Decoder<a>, fallback: a): Decoder<a> => {
-  const nullDecoder = new NullCodec()
-  nullDecoder.fallback = fallback
-  const undefinedDecoder = new UndefinedCodec()
-  undefinedDecoder.fallback = fallback
-  return either(decoder, nullDecoder, undefinedDecoder)
-}
+export const optional = <a>(decoder: Decoder<a>, fallback: a): Decoder<a> =>
+  either(decoder, new Null(fallback), new Undefined(fallback))
 
 var name = decode("foo", String)
 

@@ -1,7 +1,7 @@
 /* @flow */
 
 export class Error {
-  +describe: (context: string) => string
+  +describe: (context?: string) => string
   where(context: string): string {
     const result = context == `` ? `` : ` at ${context}`
 
@@ -65,7 +65,7 @@ export class BadPrimitive extends Error {
       }
     }
   }
-  describe(context: string): string {
+  describe(context: string = ""): string {
     const where = this.where(context)
     const value = this.serialize(this.value)
 
@@ -81,7 +81,7 @@ export class BadIndex extends Error {
     this.index = index
     this.nested = nested
   }
-  describe(context: string): string {
+  describe(context: string = "input"): string {
     return this.nested.describe(`${context}[${this.index}]`)
   }
 }
@@ -94,7 +94,7 @@ export class BadField extends Error {
     this.field = field
     this.nested = nested
   }
-  describe(context: string): string {
+  describe(context: string = "input"): string {
     return this.nested.describe(`${context}["${this.field}"]`)
   }
 }
@@ -107,13 +107,13 @@ export class BadAccessor extends Error {
     this.field = field
     this.nested = nested
   }
-  where(context: string): string {
+  where(context: string = "input"): string {
     const result =
       context === `` ? `["${this.field}"]` : ` at ${context}["${this.field}"]`
 
     return result
   }
-  describe(context: string): string {
+  describe(context: string = ""): string {
     const message = this.nested.describe("")
     const where = this.where(context)
 
@@ -127,7 +127,7 @@ export class BadEither extends Error {
     super()
     this.problems = problems
   }
-  describe(context: string): string {
+  describe(context: string = ""): string {
     const { problems } = this
     const descriptions = problems
       .map(problem => problem.describe(""))
@@ -144,10 +144,10 @@ export class Bad extends Error {
     super()
     this.reason = reason
   }
-  describe(context: string): string {
+  describe(context: string = ""): string {
     const { reason } = this
     const where = this.where(context)
 
-    return `Ran into a "fail" decoder${where}:${reason}`
+    return reason
   }
 }

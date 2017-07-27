@@ -12,6 +12,9 @@ export interface EitherDecoder<a> {
 export default class EitherCodec<a> implements EitherDecoder<a> {
   type: "Either" = "Either"
   either: Array<Decoder<a>>
+  constructor(decoders: Array<Decoder<a>>) {
+    this.either = decoders
+  }
   static decode<a>(input: mixed, { either }: EitherDecoder<a>): Decode<a> {
     let problems = null
     for (let option of either) {

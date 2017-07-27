@@ -14,6 +14,10 @@ export default class Field<a> implements FieldDecoder<a> {
   type: "Field" = "Field"
   name: string
   field: Decoder<a>
+  constructor(name: string, field: Decoder<a>) {
+    this.name = name
+    this.field = field
+  }
   static decode(input: mixed, { name, field }: FieldDecoder<a>): Decode<a> {
     if (typeof input !== "object" || input === null || !(name in input)) {
       return new BadPrimitive(`an object with a field named '${name}'`, input)

@@ -5,15 +5,18 @@ import { BadPrimitive } from "./Error"
 
 export interface UndefinedDecoder<a> {
   type: "Undefined",
-  fallback: a
+  Undefined: a
 }
 
 export default class Undefined<a> implements UndefinedDecoder<a> {
   type: "Undefined" = "Undefined"
-  fallback: a
-  static decode(input: mixed, { fallback }: UndefinedDecoder<a>): Decode<a> {
+  Undefined: a
+  constructor(Undefined: a) {
+    this.Undefined = Undefined
+  }
+  static decode(input: mixed, { Undefined }: UndefinedDecoder<a>): Decode<a> {
     if (input === undefined) {
-      return fallback
+      return Undefined
     } else {
       return new BadPrimitive("undefined", input)
     }

@@ -7,12 +7,12 @@ import Codec from "./Codec"
 
 export interface MaybeDecoder<a> {
   type: "Maybe",
-  some: Decoder<a>
+  maybe: Decoder<a>
 }
 
 const decode = Codec(
-  <a>(input: mixed, { some }: MaybeDecoder<a>): Decode<?a> => {
-    const value = decoder.decode(input, some)
+  <a>(input: mixed, { maybe }: MaybeDecoder<a>): Decode<?a> => {
+    const value = decoder.decode(input, maybe)
     if (value instanceof Error) {
       return null
     } else {
@@ -23,6 +23,9 @@ const decode = Codec(
 
 export default class Maybe<a> implements MaybeDecoder<a> {
   type: "Maybe" = "Maybe"
-  some: Decoder<a>
+  maybe: Decoder<a>
   static decode = decode
+  constructor(decoder: Decoder<a>) {
+    this.maybe = decoder
+  }
 }

@@ -18,6 +18,7 @@ const decode = Codec((input: mixed, _: Decoder<string>): Decode<string> => {
   }
 })
 
-export default class StringCodec {
+export default class StringCodec implements StringDecoder<string> {
+  type: "String" = "String"
   static decode = decode
 }

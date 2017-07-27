@@ -35,5 +35,8 @@ const decode = Codec(<a>(input: mixed, self: ArrayDecoder<a>):
 export default class ArrayCodec<a> implements ArrayDecoder<a> {
   type: "Array" = "Array"
   elementDecoder: Decoder<a>
+  constructor(decoder: Decoder<a>) {
+    this.elementDecoder = decoder
+  }
   static decode = decode
 }
