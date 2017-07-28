@@ -3,12 +3,12 @@
 import type { RecordDecoder, Record } from "./Record"
 import type { AccessorDecoder } from "./Accessor"
 import type { EitherDecoder } from "./Either"
-import type { FailDecoder } from "./Fail"
+import type { ErrorDecoder } from "./Error"
 import type { FieldDecoder } from "./Field"
 import type { IndexDecoder } from "./Index"
 import type { NullDecoder } from "./Null"
 import type { UndefinedDecoder } from "./Undefined"
-import type { SucceedDecoder } from "./Succeed"
+import type { OkDecoder } from "./Ok"
 
 import type { FloatDecoder, float } from "./Float"
 import type { IntegerDecoder, integer } from "./Integer"
@@ -28,67 +28,66 @@ import Array from "./Array"
 import Accessor from "./Accessor"
 import DictionaryCodec from "./Dictionary"
 import Either from "./Either"
-import Fail from "./Fail"
 import Field from "./Field"
 import Null from "./Null"
 import Undefined from "./Undefined"
-import Succeed from "./Succeed"
+import Ok from "./Ok"
 import Index from "./Index"
-import { Error } from "./Error"
+import Error from "./Error"
 
 import corrupt from "corrupt"
 
 export type Decode<a> = a | Error
 
-export const decode = <a>(input: mixed, decoder: Decoder<a>): Decode<a> => {
+export const decode = <a>(decoder: Decoder<a>, input: mixed): Decode<a> => {
   switch (decoder.type) {
     case "Accessor": {
-      return Accessor.decode(input, decoder)
+      return Accessor.decode(decoder, input)
     }
     case "Either": {
-      return Either.decode(input, decoder)
+      return Either.decode(decoder, input)
     }
     case "Array": {
-      return Array.decode(input, decoder)
+      return Array.decode(decoder, input)
     }
     case "Dictionary": {
-      return DictionaryCodec.decode(input, decoder)
+      return DictionaryCodec.decode(decoder, input)
     }
     case "Maybe": {
-      return Maybe.decode(input, decoder)
+      return Maybe.decode(decoder, input)
     }
     case "Float": {
-      return FloatCodec.decode(input, decoder)
+      return FloatCodec.decode(decoder, input)
     }
     case "Integer": {
-      return IntegerCodec.decode(input, decoder)
+      return IntegerCodec.decode(decoder, input)
     }
     case "String": {
-      return StringCodec.decode(input, decoder)
+      return StringCodec.decode(decoder, input)
     }
     case "Boolean": {
-      return BooleanCodec.decode(input, decoder)
+      return BooleanCodec.decode(decoder, input)
     }
     case "Record": {
-      return RecordCodec.decode(input, decoder)
+      return RecordCodec.decode(decoder, input)
     }
-    case "Fail": {
-      return Fail.decode(input, decoder)
+    case "Error": {
+      return Error.decode(decoder, input)
     }
-    case "Succeed": {
-      return Succeed.decode(input, decoder)
+    case "Ok": {
+      return Ok.decode(decoder, input)
     }
     case "Field": {
-      return Field.decode(input, decoder)
+      return Field.decode(decoder, input)
     }
     case "Index": {
-      return Index.decode(input, decoder)
+      return Index.decode(decoder, input)
     }
     case "Null": {
-      return Null.decode(input, decoder)
+      return Null.decode(decoder, input)
     }
     case "Undefined": {
-      return Undefined.decode(input, decoder)
+      return Undefined.decode(decoder, input)
     }
     default: {
       return corrupt(decoder)
@@ -99,8 +98,8 @@ export const decode = <a>(input: mixed, decoder: Decoder<a>): Decode<a> => {
 export type Decoder<a> =
   | AccessorDecoder<a>
   | EitherDecoder<a>
-  | FailDecoder<a>
-  | SucceedDecoder<a>
+  | ErrorDecoder
+  | OkDecoder<a>
   | FieldDecoder<a>
   | IndexDecoder<a>
   | NullDecoder<a>

@@ -3,7 +3,7 @@
 import type { Decoder, Decode } from "./Decoder"
 import { Error, TypeError, ThrownError } from "./Error"
 import { FieldError } from "./Field"
-import * as decoder from "./Decoder"
+import * as Reader from "./Decoder"
 import Codec from "./Codec"
 
 export type Record<a> = Decoder<$ObjMap<a, <b>(Decoder<b>) => b>>
@@ -15,12 +15,12 @@ export interface RecordDecoder<a> {
 }
 
 const decode = Codec(
-  <a: {}>(input: mixed, { fields }: RecordDecoder<a>): Decode<a> => {
+  <a: {}>({ fields }: RecordDecoder<a>, input: mixed): Decode<a> => {
     if (typeof input === "object" && input !== null) {
       const result: Object = {}
       for (let key of Object.keys(fields)) {
         try {
-          const value = decoder.decode(input[key], fields[key])
+          const value = Reader.decode(fields[key], input[key])
           if (value instanceof Error) {
             return new FieldError(key, value)
           } else {

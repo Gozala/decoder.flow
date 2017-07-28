@@ -2,7 +2,7 @@
 
 import type { Decoder, Decode } from "./Decoder"
 import { Error } from "./Error"
-import * as decoder from "./Decoder"
+import * as Reader from "./Decoder"
 import Codec from "./Codec"
 
 export interface MaybeDecoder<a> {
@@ -11,8 +11,8 @@ export interface MaybeDecoder<a> {
 }
 
 const decode = Codec(
-  <a>(input: mixed, { maybe }: MaybeDecoder<a>): Decode<?a> => {
-    const value = decoder.decode(input, maybe)
+  <a>({ maybe }: MaybeDecoder<a>, input: mixed): Decode<?a> => {
+    const value = Reader.decode(maybe, input)
     if (value instanceof Error) {
       return null
     } else {

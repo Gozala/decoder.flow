@@ -16,33 +16,23 @@ import ArrayDecoder from "./Decoder/Array"
 import Accessor from "./Decoder/Accessor"
 import DictionaryDecoder from "./Decoder/Dictionary"
 import Either from "./Decoder/Either"
-import Fail from "./Decoder/Fail"
 import Field from "./Decoder/Field"
 import Null from "./Decoder/Null"
 import Undefined from "./Decoder/Undefined"
-import Succeed from "./Decoder/Succeed"
+import Ok from "./Decoder/Ok"
 import Index from "./Decoder/Index"
-import { Error as Problem } from "./Decoder/Error"
+import Error from "./Decoder/Error"
 
 import * as Reader from "./Decoder/Decoder"
 import * as result from "result.flow"
 
-export class Error {
-  message: string
-  problem: Problem
-  constructor(problem: Problem) {
-    this.problem = problem
-    this.message = problem.describe("")
-  }
-}
-
 export type Result<a> = result.Result<Error, a>
-export type { Decoder, Decode, float, integer, Record, Dictionary }
+export type { Decoder, Decode, float, integer, Record, Dictionary, Error }
 
-export const decode = <a>(input: mixed, decoder: Decoder<a>): Result<a> => {
-  const value = Reader.decode(input, decoder)
-  if (value instanceof Problem) {
-    return result.error(new Error(value))
+export const decode = <a>(decoder: Decoder<a>, input: mixed): Result<a> => {
+  const value = Reader.decode(decoder, input)
+  if (value instanceof Error) {
+    return result.error(value)
   } else {
     return result.ok(value)
   }
@@ -53,7 +43,7 @@ export const Boolean: Decoder<boolean> = new BooleanDecoder()
 export const Integer: Decoder<integer> = new IntegerDecoder()
 export const Float: Decoder<float> = new FloatDecoder()
 
-export const fail = <a>(reason: string): Decoder<a> => new Fail(reason)
+export const error = <a>(reason: string): Decoder<a> => new Error(reason)
 
 export const field = <a>(name: string, decoder: Decoder<a>): Decoder<a> =>
   new Field(name, decoder)
@@ -126,17 +116,3 @@ export const record = <a: {}>(fields: a): Record<a> => new RecordDecoder(fields)
 
 export const optional = <a>(decoder: Decoder<a>, fallback: a): Decoder<a> =>
   either(decoder, new Null(fallback), new Undefined(fallback))
-
-var name = decode("foo", String)
-
-var point = record({ x: Float, y: Float })
-var p = decode("", point)
-if (p.isOk) {
-  p.value.x + p.value.y
-}
-
-// const point3d = record.field("x", Float).field("y", Float).field("z", Float)
-// var p2 = decode("{}", point3d)
-// if (!(p2 instanceof Error)) {
-//   p2.x + p2.y + p2.z
-// }

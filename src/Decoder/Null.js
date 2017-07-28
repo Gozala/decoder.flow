@@ -14,7 +14,7 @@ export default class Null<a> implements NullDecoder<a> {
   constructor(Null: a) {
     this.Null = Null
   }
-  static decode(input: mixed, { Null }: NullDecoder<a>): Decode<a> {
+  static decode({ Null }: NullDecoder<a>, input: mixed): Decode<a> {
     if (input === null) {
       return Null
     } else {

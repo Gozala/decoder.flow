@@ -14,7 +14,7 @@ export default class Undefined<a> implements UndefinedDecoder<a> {
   constructor(Undefined: a) {
     this.Undefined = Undefined
   }
-  static decode(input: mixed, { Undefined }: UndefinedDecoder<a>): Decode<a> {
+  static decode({ Undefined }: UndefinedDecoder<a>, input: mixed): Decode<a> {
     if (input === undefined) {
       return Undefined
     } else {

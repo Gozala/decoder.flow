@@ -2,14 +2,70 @@
 
 const anArticle = /^(a|e[^u]|i|o|u)/i
 
-export class Error {
-  +describe: (context: string) => string
+export interface ErrorDecoder {
+  type: "Error",
+  +message: string
+}
+
+export class Error implements ErrorDecoder {
+  +message: string
+  description: string
+  name: string = "Error"
+  type = "Error"
+  static decode<a>(decoder: ErrorDecoder, input: mixed): Error {
+    if (decoder instanceof Error) {
+      return decoder
+    } else {
+      return new Error(decoder.message)
+    }
+  }
+  constructor(description: string = "") {
+    if (description !== "") {
+      this.description = description
+    }
+  }
+  describe(context: string) {
+    return `${this.where(context)}${this.description}`
+  }
   where(context: string): string {
     const result = context == `` ? `` : ` at ${context}`
 
     return result
   }
+  toJSON(): ErrorDecoder {
+    return {
+      type: "Error",
+      message: this.message
+    }
+  }
 }
+
+// Flow cannot safely type getter and setter properties, so using them is an
+// error by default. It is possible to set a setting to allow them but then
+// every signle user (direct or intderect) will have to enable it for themselfs
+// and may even shoot themselvs in the foot. There for instead we just trick
+// flow into thinking it's a regular property, that way computation of the
+// error messages is deferred until it's being used. For details see:
+// https://flow.org/en/docs/config/options/#toc-unsafe-enable-getters-and-setters-boolean
+Object.defineProperties(
+  Error.prototype,
+  ({
+    message: {
+      enumerable: true,
+      configurable: true,
+      get() {
+        const value = this.describe("")
+        Object.defineProperty(this, "message", {
+          enumerable: true,
+          configurable: false,
+          writable: false,
+          value
+        })
+        return value
+      }
+    }
+  }: Object)
+)
 
 const articleFor = word => (anArticle.test(word) ? "an" : "a")
 const serialize = (value: mixed): string => {
@@ -61,6 +117,7 @@ const serialize = (value: mixed): string => {
 }
 
 export class TypeError extends Error {
+  name = "TypeError"
   expect: string
   actual: mixed
   article: string
@@ -84,6 +141,7 @@ export class TypeError extends Error {
 }
 
 export class ThrownError extends Error {
+  name = "ThrowError"
   exception: { message: string }
   constructor(exception: { message: string }) {
     super()
@@ -93,3 +151,5 @@ export class ThrownError extends Error {
     return `An exception was thrown by ${context}: ${this.exception.message}`
   }
 }
+
+export default Error

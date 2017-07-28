@@ -8,7 +8,7 @@ export interface BooleanDecoder<a> {
   type: "Boolean"
 }
 
-const decode = Codec((input: mixed, _: Decoder<boolean>): Decode<boolean> => {
+const decode = Codec((_: Decoder<boolean>, input: mixed): Decode<boolean> => {
   if (input === true) {
     return (true: any)
   } else if (input === false) {

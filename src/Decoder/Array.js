@@ -3,7 +3,7 @@
 import type { Decoder, Decode } from "./Decoder"
 import { TypeError, Error } from "./Error"
 import { IndexError } from "./Index"
-import * as decoder from "./Decoder"
+import * as Reader from "./Decoder"
 import Codec from "./Codec"
 
 export interface ArrayDecoder<a> {
@@ -11,7 +11,7 @@ export interface ArrayDecoder<a> {
   array: Decoder<a>
 }
 
-const decode = Codec(<a>(input: mixed, self: ArrayDecoder<a>):
+const decode = Codec(<a>(self: ArrayDecoder<a>, input: mixed):
   | Array<a>
   | Error => {
   const elementDecoder = self.array
@@ -19,7 +19,7 @@ const decode = Codec(<a>(input: mixed, self: ArrayDecoder<a>):
     let index = 0
     const array = []
     for (let element of ((input: any): mixed[])) {
-      const value = decoder.decode(element, elementDecoder)
+      const value = Reader.decode(elementDecoder, element)
       if (value instanceof Error) {
         return new IndexError(index, value)
       } else {

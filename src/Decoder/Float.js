@@ -15,7 +15,7 @@ export interface FloatDecoder <a> {
   type:"Float"
 }
 
-const decode = Codec((input:mixed, decoder:Decoder<float>):Decode<float> => {
+const decode = Codec((decoder:Decoder<float>, input:mixed):Decode<float> => {
   // Note that if `Number.isFinite(x)` returns `true` we know that `x` is a
   // finite number, but flow can't infer it there for we trick flow into
   // thinking that we also check typeof input === "number" so it will narrow

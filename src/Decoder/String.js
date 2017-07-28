@@ -8,7 +8,7 @@ export interface StringDecoder<a> {
   type: "String"
 }
 
-const decode = Codec((input: mixed, _: Decoder<string>): Decode<string> => {
+const decode = Codec((_: Decoder<string>, input: mixed): Decode<string> => {
   if (typeof input === "string") {
     return input
   } else if (input instanceof String) {
