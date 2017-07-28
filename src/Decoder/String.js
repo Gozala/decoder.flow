@@ -1,7 +1,7 @@
 /* @flow */
 
 import type { Decoder, Decode } from "./Decoder"
-import { BadPrimitive } from "./Error"
+import { TypeError } from "./Error"
 import Codec from "./Codec"
 
 export interface StringDecoder<a> {
@@ -14,7 +14,7 @@ const decode = Codec((input: mixed, _: Decoder<string>): Decode<string> => {
   } else if (input instanceof String) {
     return `${input}`
   } else {
-    return new BadPrimitive("a String", input)
+    return new TypeError("String", input)
   }
 })
 

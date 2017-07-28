@@ -1,7 +1,8 @@
 /* @flow */
 
 import type { Decoder, Decode } from "./Decoder"
-import { Error } from "./Error"
+import { Error, TypeError, ThrownError } from "./Error"
+import { FieldError } from "./Field"
 import * as decoder from "./Decoder"
 import Codec from "./Codec"
 
@@ -15,16 +16,24 @@ export interface RecordDecoder<a> {
 
 const decode = Codec(
   <a: {}>(input: mixed, { fields }: RecordDecoder<a>): Decode<a> => {
-    const result: Object = {}
-    for (let key of Object.keys(fields)) {
-      const value = decoder.decode(input, fields[key])
-      if (value instanceof Error) {
-        return value
-      } else {
-        result[key] = value
+    if (typeof input === "object" && input !== null) {
+      const result: Object = {}
+      for (let key of Object.keys(fields)) {
+        try {
+          const value = decoder.decode(input[key], fields[key])
+          if (value instanceof Error) {
+            return new FieldError(key, value)
+          } else {
+            result[key] = value
+          }
+        } catch (error) {
+          return new FieldError(key, new ThrownError(error))
+        }
       }
+      return result
+    } else {
+      return new TypeError("object", input)
     }
-    return result
   }
 )
 

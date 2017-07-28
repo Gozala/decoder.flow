@@ -4,7 +4,7 @@ import * as Decoder from "../"
 import * as Result from "result.flow"
 import test from "blue-tape"
 
-test("test baisc", async test => {
+test("test exports", async test => {
   test.deepEqual(typeof Decoder, "object")
   test.deepEqual(typeof Decoder.String, "object")
   test.deepEqual(typeof Decoder.Boolean, "object")
@@ -14,7 +14,6 @@ test("test baisc", async test => {
   test.deepEqual(typeof Decoder.fail, "function")
   test.deepEqual(typeof Decoder.array, "function")
   test.deepEqual(typeof Decoder.dictionary, "function")
-  test.deepEqual(typeof Decoder.entries, "function")
   test.deepEqual(typeof Decoder.field, "function")
   test.deepEqual(typeof Decoder.index, "function")
   test.deepEqual(typeof Decoder.accessor, "function")
@@ -364,6 +363,270 @@ test("Decoder.index", async test => {
   )
 })
 
+test("Decoder.at", async test => {
+  test.deepEqual(Decoder.at(["a"], Decoder.Integer), {
+    type: "Field",
+    name: "a",
+    field: Decoder.Integer
+  })
+
+  assert(
+    {
+      'Decoder.at(["a"], Decoder.Integer)': Decoder.at(["a"], Decoder.Integer)
+    },
+    input,
+    {
+      '{"a":2}': Result.ok(2),
+      '{"a":"A","b":{"c":{"d":4}}}': Result.error(
+        'Expecting an Integer at input["a"] but instead got: `"A"`'
+      )
+    },
+    (decoder, input, expect, key, name) =>
+      test.deepEqual(
+        format(Decoder.decode(input, decoder)),
+        expect ||
+          Result.error(
+            `Expecting an object with a field named \'a\' but instead got: \`${key}\``
+          ),
+        `Decoder.decode(${key}, ${name})`
+      )
+  )
+
+  test.deepEqual(Decoder.at(["b", "c"], Decoder.Float), {
+    type: "Field",
+    name: "b",
+    field: {
+      type: "Field",
+      name: "c",
+      field: Decoder.Float
+    }
+  })
+
+  assert(
+    {
+      'Decoder.at(["b", "c"], Decoder.Float)': Decoder.at(
+        ["b", "c"],
+        Decoder.Float
+      )
+    },
+    input,
+    {
+      '{"b":{"c":4.3}}': Result.ok(4.3),
+      '{"a":"A","b":{"c":{"d":4}}}': Result.error(
+        'Expecting a Float at input["b"]["c"] but instead got: `{"d":4}`'
+      )
+    },
+    (decoder, input, expect, key, name) =>
+      test.deepEqual(
+        format(Decoder.decode(input, decoder)),
+        expect ||
+          Result.error(
+            `Expecting an object with a field named \'b\' but instead got: \`${key}\``
+          ),
+        `Decoder.decode(${key}, ${name})`
+      )
+  )
+})
+
+test("Decoder.accessor", async test => {
+  test.deepEqual(Decoder.accessor("invoke", Decoder.Float), {
+    type: "Accessor",
+    name: "invoke",
+    accessor: Decoder.Float
+  })
+
+  assert(
+    {
+      'Decoder.accessor("invoke", Decoder.Integer)': Decoder.accessor(
+        "invoke",
+        Decoder.Integer
+      ),
+      ' {"type":"Accessor","name":"invoke","accessor":{"type":"Integer"}}': ({
+        type: "Accessor",
+        name: "invoke",
+        accessor: { type: "Integer" }
+      }: any)
+    },
+    input,
+    {
+      '{"fn":true,"v":1}': Result.ok(2),
+      '{"fn":true,"v":2}': Result.error(
+        'Expecting an Integer at input["invoke"]() but instead got: `2.2`'
+      )
+    },
+    (decoder, input, expect, key, name) =>
+      test.deepEqual(
+        format(Decoder.decode(input, decoder)),
+        expect ||
+          Result.error(
+            `Expecting an object with a method named 'invoke' but instead got: \`${key}\``
+          ),
+        `Decoder.decode(${key}, ${name})`
+      )
+  )
+
+  test.deepEqual(
+    Decoder.decode(
+      {
+        invoke: {}
+      },
+      Decoder.accessor("invoke", Decoder.Float)
+    ).format(error => error.message),
+    Result.error(
+      'Expecting a function at input["invoke"] but instead got: `{}`'
+    )
+  )
+
+  test.deepEqual(
+    Decoder.decode(
+      {
+        invoke: () => {
+          throw Error("Boom!")
+        }
+      },
+      Decoder.accessor("invoke", Decoder.Float)
+    ).format(error => error.message),
+    Result.error('An exception was thrown by input["invoke"](): Boom!')
+  )
+})
+
+test("Decoder.either", async test => {
+  const stringOrInt = Decoder.either(Decoder.String, Decoder.Integer)
+
+  test.deepEqual(stringOrInt, {
+    type: "Either",
+    either: [{ type: "String" }, { type: "Integer" }]
+  })
+
+  assert(
+    {
+      "Decoder.either(Decoder.String, Decoder.Integer)": Decoder.either(
+        Decoder.String,
+        Decoder.Integer
+      ),
+      '{type:"Either",either:[{type:"String"},{type:"Integer"}]}': ({
+        type: "Either",
+        either: [{ type: "String" }, { type: "Integer" }]
+      }: any)
+    },
+    input,
+    {
+      '""': Result.ok(""),
+      "0": Result.ok(0),
+      'new String("")': Result.ok(""),
+      '"hello"': Result.ok("hello"),
+      'new String("Hello")': Result.ok("Hello"),
+      "-15": Result.ok(-15),
+      "15": Result.ok(15)
+    },
+    (decoder, input, expect, key, name) =>
+      test.deepEqual(
+        Decoder.decode(input, decoder).format(error => error.message),
+        expect ||
+          Result.error(
+            `Ran into the following problems:\n\nExpecting a String but instead got: \`${key}\`\nExpecting an Integer but instead got: \`${key}\``
+          ),
+        `Decoder.decode(${key}, ${name})`
+      )
+  )
+})
+
+test("Decoder.array", async test => {
+  test.deepEqual(Decoder.array(Decoder.Float), {
+    type: "Array",
+    array: { type: "Float" }
+  })
+
+  assert(
+    {
+      "Decoder.array(Decoder.Float)": Decoder.array(Decoder.Float),
+      '{"type":"Array","array":{"type":"Float"}}': ({
+        type: "Array",
+        array: { type: "Float" }
+      }: any)
+    },
+    input,
+    {
+      "[]": Result.ok([]),
+      "[7]": Result.ok([7]),
+      '["foo"]': Result.error(
+        'Expecting a Float at input[0] but instead got: `"foo"`'
+      ),
+      "[true]": Result.error(
+        "Expecting a Float at input[0] but instead got: `true`"
+      ),
+      "[false]": Result.error(
+        "Expecting a Float at input[0] but instead got: `false`"
+      ),
+      "[1.1,2,3,4]": Result.ok([1.1, 2, 3, 4]),
+      '[["a","b","c","d"]]': Result.error(
+        'Expecting a Float at input[0] but instead got: `["a","b","c","d"]`'
+      )
+    },
+    (decoder, input, expect, key, name) =>
+      test.deepEqual(
+        Decoder.decode(input, decoder).format(error => error.message),
+        expect ||
+          Result.error(`Expecting an Array but instead got: \`${key}\``),
+        `Decoder.decode(${key}, ${name})`
+      )
+  )
+})
+
+test("Decoder.dictionary", async test => {
+  test.deepEqual(Decoder.dictionary(Decoder.Integer), {
+    type: "Dictionary",
+    dictionary: { type: "Integer" }
+  })
+
+  assert(
+    {
+      "Decoder.dictionary(Decoder.Integer)": Decoder.dictionary(
+        Decoder.Integer
+      ),
+      ' {"type":"Dictionary","dictionary":{"type":"Integer"}}': ({
+        type: "Dictionary",
+        dictionary: { type: "Integer" }
+      }: any)
+    },
+    input,
+    {
+      "{}": Result.ok({}),
+      '{"a":2}': Result.ok({ a: 2 }),
+      '{"b":{"c":4.3}}': Result.error(
+        'Expecting an Integer at input["b"] but instead got: `{"c":4.3}`'
+      ),
+      '{"a":"A","b":{"c":{"d":4}}}': Result.error(
+        'Expecting an Integer at input["a"] but instead got: `"A"`'
+      ),
+      'new String("Hello")': Result.error(
+        'Expecting an Integer at input["0"] but instead got: `"H"`'
+      ),
+      'new String("")': Result.ok({}),
+      "new Number(-9.8)": Result.ok({}),
+      "new Number(0.2)": Result.ok({}),
+      "new Number(15)": Result.ok({}),
+      "new Number(-15)": Result.ok({}),
+      "new Number(0)": Result.ok({}),
+      "new Boolean(true)": Result.ok({}),
+      "new Boolean(false)": Result.ok({}),
+      '{"fn":true,"v":1}': Result.error(
+        'Expecting an Integer at input["fn"] but instead got: `true`'
+      ),
+      '{"fn":true,"v":2}': Result.error(
+        'Expecting an Integer at input["fn"] but instead got: `true`'
+      )
+    },
+    (decoder, input, expect, key, name) =>
+      test.deepEqual(
+        Decoder.decode(input, decoder).format(error => error.message),
+        expect ||
+          Result.error(`Expecting an object but instead got: \`${key}\``),
+        `Decoder.decode(${key}, ${name})`
+      )
+  )
+})
+
 test("Decoder.optional", async test => {
   const options: Array<{
     decoder: Decoder.Decoder<any>,
@@ -451,11 +714,11 @@ test("Decoder.optional", async test => {
         test.deepEqual(
           format(Decoder.decode(input, decoder)),
           expect ||
-            Result.error(`I ran into the following problems:
+            Result.error(`Ran into the following problems:
 
 ${fail(key)}
-Expecting null but instead got: \`${key}\`
-Expecting undefined but instead got: \`${key}\``),
+Expecting a null but instead got: \`${key}\`
+Expecting an undefined but instead got: \`${key}\``),
           `Decoder.decode(${key}, ${show})`
         )
     )
@@ -489,7 +752,7 @@ test("Decoder.maybe", async test => {
     (decoder, input, expect, key, name) => {
       const result = Decoder.decode(input, decoder)
       test.deepEqual(
-        result.format(error => error.describe()),
+        result.format(error => error.message),
         expect || Result.ok(null),
         `Decoder.decode(${key}, ${name})`
       )
@@ -498,10 +761,10 @@ test("Decoder.maybe", async test => {
 })
 
 const assert = <a>(
-  decoders: { [string]: a },
+  decoders: { [string]: Decoder.Decoder<a> },
   input: { [string]: mixed },
   expect: { [string]: mixed },
-  assert: (a, mixed, mixed, string, string) => void
+  assert: (Decoder.Decoder<a>, mixed, mixed, string, string) => void
 ): void => {
   for (let name of Object.keys(decoders)) {
     const decoder = decoders[name]
@@ -512,7 +775,7 @@ const assert = <a>(
 }
 
 const format = <a>(result: Decoder.Result<a>): Result.Result<string, a> =>
-  result.format(error => error.describe())
+  result.format(error => error.message)
 
 const input = {
   null: null,
@@ -546,7 +809,22 @@ const input = {
   '"hello"': "hello",
   'new String("Hello")': new String("Hello"),
   "Symbol(foo)": Symbol("foo"),
+  "{}": {},
   '{"a":2}': { a: 2 },
   '{"b":{"c":4.3}}': { b: { c: 4.3 } },
-  '{"a":"A","b":{"c":{"d":4}}}': { a: "A", b: { c: { d: 4 } } }
+  '{"a":"A","b":{"c":{"d":4}}}': { a: "A", b: { c: { d: 4 } } },
+  '{"fn":true,"v":1}': {
+    fn: true,
+    v: 1,
+    invoke() {
+      return 2
+    }
+  },
+  '{"fn":true,"v":2}': {
+    fn: true,
+    v: 2,
+    invoke() {
+      return 2.2
+    }
+  }
 }

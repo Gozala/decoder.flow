@@ -16,7 +16,6 @@ import type { StringDecoder } from "./String"
 import type { BooleanDecoder } from "./Boolean"
 import type { MaybeDecoder } from "./Maybe"
 import type { ArrayDecoder } from "./Array"
-import type { EntriesDecoder, Entries } from "./Entries"
 import type { DictionaryDecoder, Dictionary } from "./Dictionary"
 
 import FloatCodec from "./Float"
@@ -29,14 +28,13 @@ import Array from "./Array"
 import Accessor from "./Accessor"
 import DictionaryCodec from "./Dictionary"
 import Either from "./Either"
-import EntriesCodec from "./Entries"
 import Fail from "./Fail"
 import Field from "./Field"
 import Null from "./Null"
 import Undefined from "./Undefined"
 import Succeed from "./Succeed"
 import Index from "./Index"
-import { Bad, Error } from "./Error"
+import { Error } from "./Error"
 
 import corrupt from "corrupt"
 
@@ -55,9 +53,6 @@ export const decode = <a>(input: mixed, decoder: Decoder<a>): Decode<a> => {
     }
     case "Dictionary": {
       return DictionaryCodec.decode(input, decoder)
-    }
-    case "Entries": {
-      return EntriesCodec.decode(input, decoder)
     }
     case "Maybe": {
       return Maybe.decode(input, decoder)
@@ -117,5 +112,4 @@ export type Decoder<a> =
   | MaybeDecoder<*>
   | ArrayDecoder<*>
   | DictionaryDecoder<*>
-  | EntriesDecoder<*>
   | RecordDecoder<a>

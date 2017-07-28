@@ -1,7 +1,7 @@
 /* @flow */
 
 import type { Decoder, Decode } from "./Decoder"
-import { BadPrimitive } from "./Error"
+import { TypeError } from "./Error"
 
 export interface NullDecoder<a> {
   type: "Null",
@@ -18,7 +18,7 @@ export default class Null<a> implements NullDecoder<a> {
     if (input === null) {
       return Null
     } else {
-      return new BadPrimitive("null", input)
+      return new TypeError("null", input)
     }
   }
 }

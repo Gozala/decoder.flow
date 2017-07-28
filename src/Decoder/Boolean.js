@@ -1,7 +1,7 @@
 /* @flow */
 
 import type { Decoder, Decode } from "./Decoder"
-import { BadPrimitive } from "./Error"
+import { TypeError } from "./Error"
 import Codec from "./Codec"
 
 export interface BooleanDecoder<a> {
@@ -14,7 +14,7 @@ const decode = Codec((input: mixed, _: Decoder<boolean>): Decode<boolean> => {
   } else if (input === false) {
     return (false: any)
   } else {
-    return new BadPrimitive("a Boolean", input)
+    return new TypeError("Boolean", input)
   }
 })
 

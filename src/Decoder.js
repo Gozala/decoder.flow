@@ -3,7 +3,6 @@
 import type { Decode, Decoder } from "./Decoder/Decoder"
 import type { float } from "./Decoder/Float"
 import type { integer } from "./Decoder/Integer"
-import type { Entries } from "./Decoder/Entries"
 import type { Dictionary } from "./Decoder/Dictionary"
 import type { Record } from "./Decoder/Record"
 
@@ -17,25 +16,33 @@ import ArrayDecoder from "./Decoder/Array"
 import Accessor from "./Decoder/Accessor"
 import DictionaryDecoder from "./Decoder/Dictionary"
 import Either from "./Decoder/Either"
-import EntriesDecoder from "./Decoder/Entries"
 import Fail from "./Decoder/Fail"
 import Field from "./Decoder/Field"
 import Null from "./Decoder/Null"
 import Undefined from "./Decoder/Undefined"
 import Succeed from "./Decoder/Succeed"
 import Index from "./Decoder/Index"
-import { Bad, Error } from "./Decoder/Error"
+import { Error as Problem } from "./Decoder/Error"
 
 import * as Reader from "./Decoder/Decoder"
 import * as result from "result.flow"
 
+export class Error {
+  message: string
+  problem: Problem
+  constructor(problem: Problem) {
+    this.problem = problem
+    this.message = problem.describe("")
+  }
+}
+
 export type Result<a> = result.Result<Error, a>
-export type { Decoder, Decode, float, integer, Record, Dictionary, Entries }
+export type { Decoder, Decode, float, integer, Record, Dictionary }
 
 export const decode = <a>(input: mixed, decoder: Decoder<a>): Result<a> => {
   const value = Reader.decode(input, decoder)
-  if (value instanceof Error) {
-    return result.error(value)
+  if (value instanceof Problem) {
+    return result.error(new Error(value))
   } else {
     return result.ok(value)
   }
@@ -55,16 +62,57 @@ export const index = <a>(index: number, decoder: Decoder<a>): Decoder<a> =>
   new Index(index, decoder)
 
 export const at = <a>(path: Array<string>, decoder: Decoder<a>): Decoder<a> =>
-  path.reduce((decoder: Decoder<a>, name) => field(name, decoder), decoder)
+  path.reduceRight((decoder: Decoder<a>, name) => field(name, decoder), decoder)
 
 export const accessor = <a>(name: string, decoder: Decoder<a>): Decoder<a> =>
   new Accessor(name, decoder)
 
-export const either = <a>(
-  first: Decoder<a>,
-  second: Decoder<a>,
-  ...rest: Array<Decoder<a>>
-): Decoder<a> => new Either([first, second, ...rest])
+interface $either {
+  <a, b>(Decoder<a>, Decoder<b>): Decoder<a | b>,
+  <a, b, c>(Decoder<a>, Decoder<b>, Decoder<c>): Decoder<a | b | c>,
+  <a, b, c, d>(
+    Decoder<a>,
+    Decoder<b>,
+    Decoder<c>,
+    Decoder<c>
+  ): Decoder<a | b | c | d>,
+  <a, b, c, d, e>(
+    Decoder<a>,
+    Decoder<b>,
+    Decoder<c>,
+    Decoder<c>,
+    Decoder<e>
+  ): Decoder<a | b | c | d | e>,
+  <a, b, c, d, e, f>(
+    Decoder<a>,
+    Decoder<b>,
+    Decoder<c>,
+    Decoder<c>,
+    Decoder<e>,
+    Decoder<f>
+  ): Decoder<a | b | c | d | e | f>,
+  <a, b, c, d, e, f, g>(
+    Decoder<a>,
+    Decoder<b>,
+    Decoder<c>,
+    Decoder<c>,
+    Decoder<e>,
+    Decoder<f>,
+    Decoder<g>
+  ): Decoder<a | b | c | d | e | f | g>,
+  <a, b, c, d, e, f, g, h>(
+    Decoder<a>,
+    Decoder<b>,
+    Decoder<c>,
+    Decoder<c>,
+    Decoder<e>,
+    Decoder<f>,
+    Decoder<g>,
+    Decoder<h>
+  ): Decoder<a | b | c | d | e | f | g | h>
+}
+
+export const either: $either = (...decoders) => new Either(decoders)
 
 export const maybe = <a>(decoder: Decoder<a>): Decoder<?a> => new Maybe(decoder)
 
@@ -73,9 +121,6 @@ export const array = <a>(decoder: Decoder<a>): Decoder<a[]> =>
 
 export const dictionary = <a>(decoder: Decoder<a>): Decoder<Dictionary<a>> =>
   new DictionaryDecoder(decoder)
-
-export const entries = <a>(decoder: Decoder<a>): Decoder<Entries<a>> =>
-  new EntriesDecoder(decoder)
 
 export const record = <a: {}>(fields: a): Record<a> => new RecordDecoder(fields)
 

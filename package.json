@@ -26,6 +26,7 @@
     "flow-bin": "^0.51.0",
     "flow-copy-source": "^1.2.0",
     "husky": "^0.14.0",
+    "jsdom-quokka-plugin": "^1.0.5",
     "lint-staged": "^4.0.0",
     "prettier": "^1.4.4"
   },
@@ -49,5 +50,10 @@
   "dependencies": {
     "corrupt": "^0.1.1",
     "result.flow": "^0.2.0"
+  },
+  "quokka": {
+    "pro": true,
+    "babel": true,
+    "plugins": ["jsdom-quokka-plugin"]
   }
 }

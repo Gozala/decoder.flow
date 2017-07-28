@@ -1,42 +1,43 @@
 /* @flow */
 
 import type { Decoder, Decode } from "./Decoder"
-import { BadPrimitive, BadIndex, Error } from "./Error"
+import { TypeError, Error } from "./Error"
+import { IndexError } from "./Index"
 import * as decoder from "./Decoder"
 import Codec from "./Codec"
 
 export interface ArrayDecoder<a> {
   type: "Array",
-  elementDecoder: Decoder<a>
+  array: Decoder<a>
 }
 
 const decode = Codec(<a>(input: mixed, self: ArrayDecoder<a>):
   | Array<a>
   | Error => {
-  const { elementDecoder } = self
+  const elementDecoder = self.array
   if (Array.isArray(input)) {
     let index = 0
     const array = []
     for (let element of ((input: any): mixed[])) {
-      const data = decoder.decode(element, elementDecoder)
-      if (data instanceof Error) {
-        return new BadIndex(index, data)
+      const value = decoder.decode(element, elementDecoder)
+      if (value instanceof Error) {
+        return new IndexError(index, value)
       } else {
-        array[index] = data
+        array[index] = value
       }
       index++
     }
     return array
   } else {
-    return new BadPrimitive("an Array", input)
+    return new TypeError("Array", input)
   }
 })
 
 export default class ArrayCodec<a> implements ArrayDecoder<a> {
   type: "Array" = "Array"
-  elementDecoder: Decoder<a>
+  array: Decoder<a>
   constructor(decoder: Decoder<a>) {
-    this.elementDecoder = decoder
+    this.array = decoder
   }
   static decode = decode
 }

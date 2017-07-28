@@ -1,7 +1,7 @@
 /* @flow */
 
 import type { Decoder, Decode } from "./Decoder"
-import { BadPrimitive } from "./Error"
+import { TypeError } from "./Error"
 
 export interface UndefinedDecoder<a> {
   type: "Undefined",
@@ -18,7 +18,7 @@ export default class Undefined<a> implements UndefinedDecoder<a> {
     if (input === undefined) {
       return Undefined
     } else {
-      return new BadPrimitive("undefined", input)
+      return new TypeError("undefined", input)
     }
   }
 }

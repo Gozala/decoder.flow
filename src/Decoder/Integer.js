@@ -1,7 +1,7 @@
 /* @flow */
 
 import type { Decoder, Decode } from "./Decoder"
-import { BadPrimitive } from "./Error"
+import { TypeError } from "./Error"
 import Codec from "./Codec"
 
 // babel-preset-flow@^6.23.0 does not support flow opaque type aliases
@@ -23,7 +23,7 @@ const decode = Codec((input:mixed, decoder:Decoder<integer>):Decode<integer> => 
   if (Number.isInteger(input) /*:: && typeof input === "number"*/) {
     return input
   } else {
-    return new BadPrimitive("an Integer", input)
+    return new TypeError("Integer", input)
   }
 })
 

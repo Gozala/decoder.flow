@@ -10,6 +10,9 @@ Library for turning arbitrary input into a typed data.
 ## Usage
 
 
+```js
+import * as Decoder from "./"
+```
 
 ## Install
 

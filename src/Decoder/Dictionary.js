@@ -1,7 +1,8 @@
 /* @flow */
 
 import type { Decoder, Decode } from "./Decoder"
-import { BadPrimitive, BadField, Error } from "./Error"
+import { TypeError, ThrownError, Error } from "./Error"
+import { FieldError } from "./Field"
 import * as decoder from "./Decoder"
 import Codec from "./Codec"
 
@@ -9,23 +10,27 @@ export type Dictionary<a> = { [string]: a }
 
 export interface DictionaryDecoder<a> {
   type: "Dictionary",
-  valueDecoder: Decoder<a>
+  dictionary: Decoder<a>
 }
 
 const decode = Codec(<a>(input: mixed, self: DictionaryDecoder<a>): Decode<
   Dictionary<a>
 > => {
-  const { valueDecoder } = self
+  const valueDecoder = self.dictionary
   if (typeof input !== "object" || input === null || Array.isArray(input)) {
-    return new BadPrimitive("an object", input)
+    return new TypeError("object", input)
   } else {
     const dictionary = Object.create(null)
     for (let key in input) {
-      const data = decoder.decode(input[key], valueDecoder)
-      if (data instanceof Error) {
-        return new BadField(key, data)
-      } else {
-        dictionary[key] = data
+      try {
+        const value = decoder.decode(input[key], valueDecoder)
+        if (value instanceof Error) {
+          return new FieldError(key, value)
+        } else {
+          dictionary[key] = value
+        }
+      } catch (error) {
+        return new FieldError(key, new ThrownError(error))
       }
     }
     return dictionary
@@ -34,9 +39,9 @@ const decode = Codec(<a>(input: mixed, self: DictionaryDecoder<a>): Decode<
 
 export default class DictionaryCodec<a> implements DictionaryDecoder<a> {
   type: "Dictionary" = "Dictionary"
-  valueDecoder: Decoder<a>
+  dictionary: Decoder<a>
   constructor(decoder: Decoder<a>) {
-    this.valueDecoder = decoder
+    this.dictionary = decoder
   }
   static decode = decode
 }

@@ -1,8 +1,25 @@
 /* @flow */
 
 import type { Decoder, Decode } from "./Decoder"
-import { BadEither, Error } from "./Error"
+import { Error } from "./Error"
 import * as decoder from "./Decoder"
+
+export class EitherError extends Error {
+  problems: Error[]
+  constructor(problems: Error[]) {
+    super()
+    this.problems = problems
+  }
+  describe(context: string): string {
+    const { problems } = this
+    const descriptions = problems
+      .map(problem => problem.describe(context))
+      .join("\n")
+    const where = this.where(context)
+
+    return `Ran into the following problems${where}:\n\n${descriptions}`
+  }
+}
 
 export interface EitherDecoder<a> {
   type: "Either",
@@ -26,6 +43,6 @@ export default class EitherCodec<a> implements EitherDecoder<a> {
       }
     }
 
-    return new BadEither(problems || [])
+    return new EitherError(problems || [])
   }
 }
