@@ -2,13 +2,13 @@
 
 import type { Decoder, Decode } from "./Decoder"
 import { TypeError } from "./Error"
-import Codec from "./Codec"
+import Read from "../Reader/Read"
 
 export interface BooleanDecoder<a> {
   type: "Boolean"
 }
 
-const decode = Codec((_: Decoder<boolean>, input: mixed): Decode<boolean> => {
+const read = Read((_: Decoder<boolean>, input: mixed): Decode<boolean> => {
   if (input === true) {
     return (true: any)
   } else if (input === false) {
@@ -19,6 +19,6 @@ const decode = Codec((_: Decoder<boolean>, input: mixed): Decode<boolean> => {
 })
 
 export default class Boolean implements BooleanDecoder<boolean> {
-  static decode = decode
+  static read = read
   type: "Boolean" = "Boolean"
 }

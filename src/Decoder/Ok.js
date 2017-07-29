@@ -10,7 +10,7 @@ export interface OkDecoder<a> {
 export default class Ok<a> implements OkDecoder<a> {
   type: "Ok" = "Ok"
   value: a
-  static decode({ value }: OkDecoder<a>, input: mixed): Decode<a> {
+  static read({ value }: OkDecoder<a>, input: mixed): Decode<a> {
     return value
   }
 }

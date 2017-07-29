@@ -2,13 +2,13 @@
 
 import type { Decoder, Decode } from "./Decoder"
 import { TypeError } from "./Error"
-import Codec from "./Codec"
+import Read from "../Reader/Read"
 
 export interface StringDecoder<a> {
   type: "String"
 }
 
-const decode = Codec((_: Decoder<string>, input: mixed): Decode<string> => {
+const read = Read((_: Decoder<string>, input: mixed): Decode<string> => {
   if (typeof input === "string") {
     return input
   } else if (input instanceof String) {
@@ -20,5 +20,5 @@ const decode = Codec((_: Decoder<string>, input: mixed): Decode<string> => {
 
 export default class StringCodec implements StringDecoder<string> {
   type: "String" = "String"
-  static decode = decode
+  static read = read
 }

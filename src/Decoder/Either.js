@@ -2,7 +2,7 @@
 
 import type { Decoder, Decode } from "./Decoder"
 import { Error } from "./Error"
-import * as Reader from "./Decoder"
+import * as Reader from "../Reader"
 
 export class EitherError extends Error {
   name = "EitherError"
@@ -33,10 +33,10 @@ export default class EitherCodec<a> implements EitherDecoder<a> {
   constructor(decoders: Array<Decoder<a>>) {
     this.either = decoders
   }
-  static decode<a>({ either }: EitherDecoder<a>, input: mixed): Decode<a> {
+  static read<a>({ either }: EitherDecoder<a>, input: mixed): Decode<a> {
     let problems = null
     for (let decoder of either) {
-      const value = Reader.decode(decoder, input)
+      const value = Reader.read(decoder, input)
       if (value instanceof Error) {
         problems = problems == null ? [value] : (problems.push(value), problems)
       } else {

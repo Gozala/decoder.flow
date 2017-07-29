@@ -3,7 +3,7 @@
 import type { Decoder, Decode } from "./Decoder"
 import { TypeError, ThrownError, Error } from "./Error"
 import { FieldError } from "./Field"
-import * as Reader from "./Decoder"
+import * as Reader from "../Reader"
 
 export class AccessorError extends Error {
   name = "AccessorError"
@@ -34,13 +34,13 @@ export default class AccessorCodec<a> implements AccessorDecoder<a> {
     this.name = name
     this.accessor = decoder
   }
-  static decode(decoder: AccessorDecoder<a>, input: mixed): Decode<a> {
+  static read(decoder: AccessorDecoder<a>, input: mixed): Decode<a> {
     const { name, accessor } = decoder
     if (typeof input === "object" && input != null && name in input) {
       const object: Object = input
       try {
         if (typeof object[name] === "function") {
-          const value = Reader.decode(accessor, object[name]())
+          const value = Reader.read(accessor, object[name]())
           if (value instanceof Error) {
             return new AccessorError(name, value)
           } else {

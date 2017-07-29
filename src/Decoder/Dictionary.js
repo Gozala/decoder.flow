@@ -3,8 +3,8 @@
 import type { Decoder, Decode } from "./Decoder"
 import { TypeError, ThrownError, Error } from "./Error"
 import { FieldError } from "./Field"
-import * as Reader from "./Decoder"
-import Codec from "./Codec"
+import * as Reader from "../Reader"
+import Read from "../Reader/Read"
 
 export type Dictionary<a> = { [string]: a }
 
@@ -13,7 +13,7 @@ export interface DictionaryDecoder<a> {
   dictionary: Decoder<a>
 }
 
-const decode = Codec(<a>(self: DictionaryDecoder<a>, input: mixed): Decode<
+const read = Read(<a>(self: DictionaryDecoder<a>, input: mixed): Decode<
   Dictionary<a>
 > => {
   const valueDecoder = self.dictionary
@@ -23,7 +23,7 @@ const decode = Codec(<a>(self: DictionaryDecoder<a>, input: mixed): Decode<
     const dictionary = Object.create(null)
     for (let key in input) {
       try {
-        const value = Reader.decode(valueDecoder, input[key])
+        const value = Reader.read(valueDecoder, input[key])
         if (value instanceof Error) {
           return new FieldError(key, value)
         } else {
@@ -43,5 +43,5 @@ export default class DictionaryCodec<a> implements DictionaryDecoder<a> {
   constructor(decoder: Decoder<a>) {
     this.dictionary = decoder
   }
-  static decode = decode
+  static read = read
 }

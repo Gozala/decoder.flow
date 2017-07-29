@@ -1,7 +1,7 @@
 /* @flow */
 
 import type { Decoder, Decode } from "./Decoder"
-import Codec from "./Codec"
+import Read from "../Reader/Read"
 import { TypeError } from "./Error"
 
 // babel-preset-flow@^6.23.0 does not support flow opaque type aliases
@@ -15,7 +15,7 @@ export interface FloatDecoder <a> {
   type:"Float"
 }
 
-const decode = Codec((decoder:Decoder<float>, input:mixed):Decode<float> => {
+const read = Read((decoder:Decoder<float>, input:mixed):Decode<float> => {
   // Note that if `Number.isFinite(x)` returns `true` we know that `x` is a
   // finite number, but flow can't infer it there for we trick flow into
   // thinking that we also check typeof input === "number" so it will narrow
@@ -28,6 +28,6 @@ const decode = Codec((decoder:Decoder<float>, input:mixed):Decode<float> => {
 })
 
 export default class Float implements FloatDecoder <float> {
-  static decode = decode
+  static read = read
   type:"Float" = "Float"
 }

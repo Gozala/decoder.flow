@@ -17,83 +17,9 @@ import type { BooleanDecoder } from "./Boolean"
 import type { MaybeDecoder } from "./Maybe"
 import type { ArrayDecoder } from "./Array"
 import type { DictionaryDecoder, Dictionary } from "./Dictionary"
-
-import FloatCodec from "./Float"
-import IntegerCodec from "./Integer"
-import StringCodec from "./String"
-import BooleanCodec from "./Boolean"
-import Maybe from "./Maybe"
-import RecordCodec from "./Record"
-import Array from "./Array"
-import Accessor from "./Accessor"
-import DictionaryCodec from "./Dictionary"
-import Either from "./Either"
-import Field from "./Field"
-import Null from "./Null"
-import Undefined from "./Undefined"
-import Ok from "./Ok"
-import Index from "./Index"
-import Error from "./Error"
-
-import corrupt from "corrupt"
+import type { Error } from "./Error"
 
 export type Decode<a> = a | Error
-
-export const decode = <a>(decoder: Decoder<a>, input: mixed): Decode<a> => {
-  switch (decoder.type) {
-    case "Accessor": {
-      return Accessor.decode(decoder, input)
-    }
-    case "Either": {
-      return Either.decode(decoder, input)
-    }
-    case "Array": {
-      return Array.decode(decoder, input)
-    }
-    case "Dictionary": {
-      return DictionaryCodec.decode(decoder, input)
-    }
-    case "Maybe": {
-      return Maybe.decode(decoder, input)
-    }
-    case "Float": {
-      return FloatCodec.decode(decoder, input)
-    }
-    case "Integer": {
-      return IntegerCodec.decode(decoder, input)
-    }
-    case "String": {
-      return StringCodec.decode(decoder, input)
-    }
-    case "Boolean": {
-      return BooleanCodec.decode(decoder, input)
-    }
-    case "Record": {
-      return RecordCodec.decode(decoder, input)
-    }
-    case "Error": {
-      return Error.decode(decoder, input)
-    }
-    case "Ok": {
-      return Ok.decode(decoder, input)
-    }
-    case "Field": {
-      return Field.decode(decoder, input)
-    }
-    case "Index": {
-      return Index.decode(decoder, input)
-    }
-    case "Null": {
-      return Null.decode(decoder, input)
-    }
-    case "Undefined": {
-      return Undefined.decode(decoder, input)
-    }
-    default: {
-      return corrupt(decoder)
-    }
-  }
-}
 
 export type Decoder<a> =
   | AccessorDecoder<a>

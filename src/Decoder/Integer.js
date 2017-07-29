@@ -2,7 +2,7 @@
 
 import type { Decoder, Decode } from "./Decoder"
 import { TypeError } from "./Error"
-import Codec from "./Codec"
+import Read from "../Reader/Read"
 
 // babel-preset-flow@^6.23.0 does not support flow opaque type aliases
 // (See https://github.com/babel/babel/pull/5990)
@@ -15,7 +15,7 @@ export interface IntegerDecoder <a> {
   type: "Integer"
 }
 
-const decode = Codec((decoder:Decoder<integer>, input:mixed):Decode<integer> => {
+const read = Read((decoder:Decoder<integer>, input:mixed):Decode<integer> => {
   // Note that if `Number.isInteger(x)` returns `true` we know that `x` is an
   // integer number, but flow can not infer that, there for we trick flow into
   // thinking we also perform typeof input === "number" so it can narrow down
@@ -28,6 +28,6 @@ const decode = Codec((decoder:Decoder<integer>, input:mixed):Decode<integer> => 
 })
 
 export default class Integer implements IntegerDecoder <integer> {
-  static decode = decode
+  static read = read
   type:"Integer" = "Integer"
 }

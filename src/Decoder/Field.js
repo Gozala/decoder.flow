@@ -2,7 +2,7 @@
 
 import type { Decoder, Decode } from "./Decoder"
 import { TypeError, ThrownError, Error } from "./Error"
-import * as Reader from "./Decoder"
+import * as Reader from "../Reader"
 
 export class FieldError extends Error {
   name = "FieldError"
@@ -33,12 +33,12 @@ export default class Field<a> implements FieldDecoder<a> {
     this.name = name
     this.field = field
   }
-  static decode({ name, field }: FieldDecoder<a>, input: mixed): Decode<a> {
+  static read({ name, field }: FieldDecoder<a>, input: mixed): Decode<a> {
     if (typeof input !== "object" || input === null || !(name in input)) {
       return new TypeError(`object with a field named '${name}'`, input)
     } else {
       try {
-        const value = Reader.decode(field, input[name])
+        const value = Reader.read(field, input[name])
         if (value instanceof Error) {
           return new FieldError(name, value)
         } else {
