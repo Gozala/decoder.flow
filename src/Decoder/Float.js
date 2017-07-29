@@ -15,6 +15,7 @@ export interface FloatDecoder <a> {
   type:"Float"
 }
 
+
 const read = Read((decoder:Decoder<float>, input:mixed):Decode<float> => {
   // Note that if `Number.isFinite(x)` returns `true` we know that `x` is a
   // finite number, but flow can't infer it there for we trick flow into
@@ -28,6 +29,16 @@ const read = Read((decoder:Decoder<float>, input:mixed):Decode<float> => {
 })
 
 export default class Float implements FloatDecoder <float> {
+  type = "Float"
   static read = read
-  type:"Float" = "Float"
+  static toFloat(value:number):float {
+    switch (value) {
+      case +Infinity:
+        return Number.MAX_VALUE
+      case -Infinity:
+        return Number.MIN_VALUE
+      default:
+        return value !== value ? 0 : value
+    }
+  }
 }

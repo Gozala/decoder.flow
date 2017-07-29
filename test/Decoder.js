@@ -6,10 +6,15 @@ import test from "blue-tape"
 
 test("test exports", async test => {
   test.deepEqual(typeof Decoder, "object")
+  test.deepEqual(typeof Decoder.decode, "function")
+  test.deepEqual(typeof Decoder.parse, "function")
+
   test.deepEqual(typeof Decoder.String, "object")
   test.deepEqual(typeof Decoder.Boolean, "object")
   test.deepEqual(typeof Decoder.Integer, "object")
+  test.deepEqual(typeof Decoder.toInteger, "function")
   test.deepEqual(typeof Decoder.Float, "object")
+  test.deepEqual(typeof Decoder.toFloat, "function")
 
   test.deepEqual(typeof Decoder.error, "function")
   test.deepEqual(typeof Decoder.field, "function")

@@ -116,3 +116,6 @@ export const record = <a: {}>(fields: a): Record<a> => new RecordDecoder(fields)
 
 export const optional = <a>(decoder: Decoder<a>, fallback: a): Decoder<a> =>
   either(decoder, new Null(fallback), new Undefined(fallback))
+
+export const toInteger = IntegerDecoder.toInteger
+export const toFloat = FloatDecoder.toFloat

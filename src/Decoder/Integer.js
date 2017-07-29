@@ -28,6 +28,16 @@ const read = Read((decoder:Decoder<integer>, input:mixed):Decode<integer> => {
 })
 
 export default class Integer implements IntegerDecoder <integer> {
+  type = "Integer"
   static read = read
-  type:"Integer" = "Integer"
+  static toInteger(value:number):integer {
+    switch (value) {
+      case +Infinity:
+        return Number.MAX_SAFE_INTEGER
+      case -Infinity:
+        return Number.MIN_SAFE_INTEGER
+      default:
+        return value | 0
+    }
+  }
 }
