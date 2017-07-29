@@ -155,3 +155,23 @@ Decoder.decode(point3d, { x: 3, y: 5, z: 7 }) //?_($)
 Decoder.decode(point3d, { x: 3, y: 5.2 }) //?_($)
 
 // ### accessor
+
+Decoder.decode(Decoder.accessor("cwd", Decoder.String), process) //?_($)
+
+Decoder.decode(
+  Decoder.form({
+    title: Decoder.field("title", Decoder.String),
+    cwd: Decoder.accessor("cwd", Decoder.String),
+    architecture: Decoder.at(
+      ["config", "variables", "host_arch"],
+      Decoder.String
+    ),
+    heapUsed: Decoder.accessor(
+      "memoryUsage",
+      Decoder.field("heapUsed", Decoder.Integer)
+    )
+  }),
+  process
+) //?_($)
+
+process //?

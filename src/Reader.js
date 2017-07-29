@@ -8,6 +8,7 @@ import StringCodec from "./Decoder/String"
 import BooleanCodec from "./Decoder/Boolean"
 import Maybe from "./Decoder/Maybe"
 import RecordCodec from "./Decoder/Record"
+import Form from "./Decoder/Form"
 import Array from "./Decoder/Array"
 import Accessor from "./Decoder/Accessor"
 import DictionaryCodec from "./Decoder/Dictionary"
@@ -52,6 +53,9 @@ export const read = <a>(decoder: Decoder<a>, input: mixed): Decode<a> => {
     }
     case "Record": {
       return RecordCodec.read(decoder, input)
+    }
+    case "Form": {
+      return Form.read(decoder, input)
     }
     case "Error": {
       return Error.read(decoder, input)

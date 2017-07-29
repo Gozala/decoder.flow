@@ -12,6 +12,7 @@ import IntegerDecoder from "./Decoder/Integer"
 import FloatDecoder from "./Decoder/Float"
 import Maybe from "./Decoder/Maybe"
 import RecordDecoder from "./Decoder/Record"
+import Form from "./Decoder/Form"
 import ArrayDecoder from "./Decoder/Array"
 import Accessor from "./Decoder/Accessor"
 import DictionaryDecoder from "./Decoder/Dictionary"
@@ -131,6 +132,8 @@ export const array = <a>(decoder: Decoder<a>): Decoder<a[]> =>
 
 export const dictionary = <a>(decoder: Decoder<a>): Decoder<Dictionary<a>> =>
   new DictionaryDecoder(decoder)
+
+export const form = <a: {}>(fields: a): Record<a> => new Form(fields)
 
 export const record = <a: {}>(fields: a): Record<a> => new RecordDecoder(fields)
 

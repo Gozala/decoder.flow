@@ -1,6 +1,7 @@
 /* @flow */
 
 import type { RecordDecoder, Record } from "./Record"
+import type { FormDecoder } from "./Form"
 import type { AccessorDecoder } from "./Accessor"
 import type { EitherDecoder } from "./Either"
 import type { ErrorDecoder } from "./Error"
@@ -38,3 +39,4 @@ export type Decoder<a> =
   | ArrayDecoder<*>
   | DictionaryDecoder<*>
   | RecordDecoder<a>
+  | FormDecoder<a>

@@ -27,4 +27,5 @@ test("test exports", async test => {
   test.deepEqual(typeof Decoder.optional, "function")
   test.deepEqual(typeof Decoder.maybe, "function")
   test.deepEqual(typeof Decoder.record, "function")
+  test.deepEqual(typeof Decoder.form, "function")
 })
