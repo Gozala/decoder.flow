@@ -29,6 +29,26 @@ import * as result from "result.flow"
 export type Result<a> = result.Result<Error, a>
 export type { Decoder, Decode, float, integer, Record, Dictionary, Error }
 
+class ParseError extends Error {
+  name = "ParseError"
+  error: { message: string }
+  constructor(error: { message: string }) {
+    super()
+    this.error = error
+  }
+  describe(context: string): string {
+    return `Parse error: ${this.error.message}`
+  }
+}
+
+export const parse = <a>(decoder: Decoder<a>, input: string): Result<a> => {
+  try {
+    return decode(decoder, JSON.parse(input))
+  } catch (error) {
+    return result.error(new ParseError(error))
+  }
+}
+
 export const decode = <a>(decoder: Decoder<a>, input: mixed): Result<a> => {
   const value = Reader.read(decoder, input)
   if (value instanceof Error) {
