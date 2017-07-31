@@ -81,3 +81,59 @@ testDecode(
   {},
   key => Result.ok({})
 )
+
+test("Decode.from same thing", async test => {
+  const decoder = Decoder.form({
+    title: Decoder.field("title", Decoder.String),
+    cwd: Decoder.accessor("cwd", Decoder.String),
+    architecture: Decoder.at(
+      ["config", "variables", "host_arch"],
+      Decoder.String
+    ),
+    heapUsed: Decoder.accessor(
+      "memoryUsage",
+      Decoder.field("heapUsed", Decoder.Integer)
+    )
+  })
+
+  const result = Decoder.decode(decoder, {
+    title: "/usr/local/bin/node",
+    cwd() {
+      return "~/Projects/decoder.flow/test/"
+    },
+    config: {
+      target_defaults: {
+        cflags: [],
+        default_configuration: "Release",
+        defines: [],
+        include_dirs: [],
+        libraries: []
+      },
+      variables: {
+        asan: 0,
+        coverage: false,
+        debug_devtools: "node",
+        force_dynamic_crt: 0,
+        host_arch: "x64"
+      }
+    },
+    memoryUsage() {
+      return {
+        rss: 34304000,
+        heapTotal: 7340032,
+        heapUsed: 5720104,
+        external: 8666
+      }
+    }
+  })
+
+  test.deepEqual(
+    result,
+    Result.ok({
+      title: "/usr/local/bin/node",
+      cwd: "~/Projects/decoder.flow/test/",
+      architecture: "x64",
+      heapUsed: 5720104
+    })
+  )
+})
