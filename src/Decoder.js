@@ -43,6 +43,13 @@ class ParseError extends Error {
   }
 }
 
+/**
+ * Parses given `input` string into a JSON value and then runs given
+ * `Decoder<a>` on it. Returns `Result` with `Result.Error<Decoder.ParseError>`
+ * if the string is not well-formed JSON or `Result.Error<Decoder.Error>` if
+ * the value can't be decoded with a given `Decoder<a>`. If operation is
+ * successfull returns `Result.Ok<a>`.
+ */
 export const parse = <a>(decoder: Decoder<a>, input: string): Result<a> => {
   try {
     return decode(decoder, JSON.parse(input))
@@ -51,8 +58,13 @@ export const parse = <a>(decoder: Decoder<a>, input: string): Result<a> => {
   }
 }
 
-export const decode = <a>(decoder: Decoder<a>, input: mixed): Result<a> => {
-  const value = Reader.read(decoder, input)
+/**
+ * Runs given `Decoder<a>` on a given JSON value. Returns `Result` that either
+ * contains `Decoder.Error` if value can't be decoded with a given decoder or
+ * a `Result.Ok<a>`.
+ */
+export const decode = <a>(decoder: Decoder<a>, json: mixed): Result<a> => {
+  const value = Reader.read(decoder, json)
   if (value instanceof Error) {
     return result.error(value)
   } else {
@@ -61,20 +73,22 @@ export const decode = <a>(decoder: Decoder<a>, input: mixed): Result<a> => {
 }
 
 export const String: Decoder<string> = new StringDecoder()
+
 export const Boolean: Decoder<boolean> = new BooleanDecoder()
-export const Integer: Decoder<integer> = new IntegerDecoder()
+
 export const Float: Decoder<float> = new FloatDecoder()
 
+export const Integer: Decoder<integer> = new IntegerDecoder()
 export const error = <a>(reason: string): Decoder<a> => new Error(reason)
 
 export const field = <a>(name: string, decoder: Decoder<a>): Decoder<a> =>
   new Field(name, decoder)
 
+export const at = <a>(path: string[], decoder: Decoder<a>): Decoder<a> =>
+  path.reduceRight((decoder: Decoder<a>, name) => field(name, decoder), decoder)
+
 export const index = <a>(index: number, decoder: Decoder<a>): Decoder<a> =>
   new Index(index, decoder)
-
-export const at = <a>(path: Array<string>, decoder: Decoder<a>): Decoder<a> =>
-  path.reduceRight((decoder: Decoder<a>, name) => field(name, decoder), decoder)
 
 export const accessor = <a>(name: string, decoder: Decoder<a>): Decoder<a> =>
   new Accessor(name, decoder)
