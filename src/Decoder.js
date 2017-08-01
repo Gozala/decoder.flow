@@ -79,6 +79,9 @@ export const Boolean: Decoder<boolean> = new BooleanDecoder()
 export const Float: Decoder<float> = new FloatDecoder()
 
 export const Integer: Decoder<integer> = new IntegerDecoder()
+
+export const ok = <a>(value: a): Decoder<a> => new Ok(value)
+
 export const error = <a>(reason: string): Decoder<a> => new Error(reason)
 
 export const field = <a>(name: string, decoder: Decoder<a>): Decoder<a> =>

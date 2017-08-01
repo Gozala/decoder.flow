@@ -13,4 +13,7 @@ export default class Ok<a> implements OkDecoder<a> {
   static read({ value }: OkDecoder<a>, input: mixed): Decode<a> {
     return value
   }
+  constructor(value: a) {
+    this.value = value
+  }
 }

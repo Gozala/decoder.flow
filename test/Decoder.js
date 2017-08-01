@@ -17,6 +17,7 @@ test("test exports", async test => {
   test.deepEqual(typeof Decoder.toFloat, "function")
 
   test.deepEqual(typeof Decoder.error, "function")
+  test.deepEqual(typeof Decoder.ok, "function")
   test.deepEqual(typeof Decoder.field, "function")
   test.deepEqual(typeof Decoder.index, "function")
   test.deepEqual(typeof Decoder.at, "function")
