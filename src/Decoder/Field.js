@@ -34,19 +34,29 @@ export default class Field<a> implements FieldDecoder<a> {
     this.field = field
   }
   static read({ name, field }: FieldDecoder<a>, input: mixed): Decode<a> {
-    if (typeof input !== "object" || input === null || !(name in input)) {
-      return new TypeError(`object with a field named '${name}'`, input)
-    } else {
-      try {
-        const value = Reader.read(field, input[name])
-        if (value instanceof Error) {
-          return new FieldError(name, value)
+    switch (typeof input) {
+      case "function":
+      case "object": {
+        if (input === null) {
+          break
         } else {
-          return value
+          try {
+            const value = Reader.read(field, input[name])
+            if (value instanceof Error) {
+              if (name in (input: Object)) {
+                return new FieldError(name, value)
+              } else {
+                break
+              }
+            } else {
+              return value
+            }
+          } catch (error) {
+            return new FieldError(name, new ThrownError(error))
+          }
         }
-      } catch (error) {
-        return new FieldError(name, new ThrownError(error))
       }
     }
+    return new TypeError(`object with a field named '${name}'`, input)
   }
 }

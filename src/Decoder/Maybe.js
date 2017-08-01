@@ -13,7 +13,11 @@ export interface MaybeDecoder<a> {
 const read = Read(<a>({ maybe }: MaybeDecoder<a>, input: mixed): Decode<?a> => {
   const value = Reader.read(maybe, input)
   if (value instanceof Error) {
-    return null
+    if (input == null) {
+      return value
+    } else {
+      return null
+    }
   } else {
     return value
   }
