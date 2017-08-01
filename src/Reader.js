@@ -8,6 +8,7 @@ import StringCodec from "./Decoder/String"
 import BooleanCodec from "./Decoder/Boolean"
 import Maybe from "./Decoder/Maybe"
 import RecordCodec from "./Decoder/Record"
+import Optional from "./Decoder/Optional"
 import Form from "./Decoder/Form"
 import Array from "./Decoder/Array"
 import Accessor from "./Decoder/Accessor"
@@ -38,6 +39,9 @@ export const read = <a>(decoder: Decoder<a>, input: mixed): Decode<a> => {
     }
     case "Maybe": {
       return Maybe.read(decoder, input)
+    }
+    case "Optional": {
+      return Optional.read(decoder, input)
     }
     case "Float": {
       return FloatCodec.read(decoder, input)

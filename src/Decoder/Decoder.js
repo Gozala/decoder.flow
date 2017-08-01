@@ -16,6 +16,7 @@ import type { IntegerDecoder, integer } from "./Integer"
 import type { StringDecoder } from "./String"
 import type { BooleanDecoder } from "./Boolean"
 import type { MaybeDecoder } from "./Maybe"
+import type { OptionalDecoder } from "./Optional"
 import type { ArrayDecoder } from "./Array"
 import type { DictionaryDecoder, Dictionary } from "./Dictionary"
 import type { Error } from "./Error"
@@ -35,6 +36,7 @@ export type Decoder<a> =
   | FloatDecoder<a>
   | IntegerDecoder<a>
   | StringDecoder<a>
+  | OptionalDecoder<*>
   | MaybeDecoder<*>
   | ArrayDecoder<*>
   | DictionaryDecoder<*>
