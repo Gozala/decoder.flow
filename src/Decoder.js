@@ -96,52 +96,8 @@ export const index = <a>(index: number, decoder: Decoder<a>): Decoder<a> =>
 export const accessor = <a>(name: string, decoder: Decoder<a>): Decoder<a> =>
   new Accessor(name, decoder)
 
-interface $either {
-  <a, b>(Decoder<a>, Decoder<b>): Decoder<a | b>,
-  <a, b, c>(Decoder<a>, Decoder<b>, Decoder<c>): Decoder<a | b | c>,
-  <a, b, c, d>(
-    Decoder<a>,
-    Decoder<b>,
-    Decoder<c>,
-    Decoder<c>
-  ): Decoder<a | b | c | d>,
-  <a, b, c, d, e>(
-    Decoder<a>,
-    Decoder<b>,
-    Decoder<c>,
-    Decoder<c>,
-    Decoder<e>
-  ): Decoder<a | b | c | d | e>,
-  <a, b, c, d, e, f>(
-    Decoder<a>,
-    Decoder<b>,
-    Decoder<c>,
-    Decoder<c>,
-    Decoder<e>,
-    Decoder<f>
-  ): Decoder<a | b | c | d | e | f>,
-  <a, b, c, d, e, f, g>(
-    Decoder<a>,
-    Decoder<b>,
-    Decoder<c>,
-    Decoder<c>,
-    Decoder<e>,
-    Decoder<f>,
-    Decoder<g>
-  ): Decoder<a | b | c | d | e | f | g>,
-  <a, b, c, d, e, f, g, h>(
-    Decoder<a>,
-    Decoder<b>,
-    Decoder<c>,
-    Decoder<c>,
-    Decoder<e>,
-    Decoder<f>,
-    Decoder<g>,
-    Decoder<h>
-  ): Decoder<a | b | c | d | e | f | g | h>
-}
-
-export const either: $either = (...decoders) => new Either(decoders)
+export const either = <a>(...decoders: Decoder<a>[]): Decoder<a> =>
+  new Either(decoders)
 
 export const maybe = <a>(decoder: Decoder<a>): Decoder<?a> => new Maybe(decoder)
 
