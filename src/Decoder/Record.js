@@ -37,7 +37,7 @@ const read = Read(<a: {}>({ fields }: RecordDecoder<a>, input: mixed): Decode<
   }
 })
 
-export default class RecordCodec<a: {}> implements RecordDecoder<a> {
+export default class RecordReader<a: {}> implements RecordDecoder<a> {
   type: "Record" = "Record"
   fields: Fields<a>
   constructor(fields: Fields<a>) {

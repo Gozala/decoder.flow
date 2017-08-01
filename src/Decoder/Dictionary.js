@@ -37,7 +37,7 @@ const read = Read(<a>(self: DictionaryDecoder<a>, input: mixed): Decode<
   }
 })
 
-export default class DictionaryCodec<a> implements DictionaryDecoder<a> {
+export default class DictionaryReader<a> implements DictionaryDecoder<a> {
   type: "Dictionary" = "Dictionary"
   dictionary: Decoder<a>
   constructor(decoder: Decoder<a>) {

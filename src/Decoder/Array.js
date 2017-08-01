@@ -11,9 +11,7 @@ export interface ArrayDecoder<a> {
   array: Decoder<a>
 }
 
-const read = Read(<a>(self: ArrayDecoder<a>, input: mixed):
-  | Array<a>
-  | Error => {
+const read = Read(<a>(self: ArrayDecoder<a>, input: mixed): a[] | Error => {
   const elementDecoder = self.array
   if (Array.isArray(input)) {
     let index = 0
@@ -33,9 +31,10 @@ const read = Read(<a>(self: ArrayDecoder<a>, input: mixed):
   }
 })
 
-export default class ArrayCodec<a> implements ArrayDecoder<a> {
+export default class Array<a> implements ArrayDecoder<a> {
   type: "Array" = "Array"
   array: Decoder<a>
+  static isArray = [].constructor.isArray
   constructor(decoder: Decoder<a>) {
     this.array = decoder
   }

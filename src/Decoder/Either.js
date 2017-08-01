@@ -27,7 +27,7 @@ export interface EitherDecoder<a> {
   either: Array<Decoder<a>>
 }
 
-export default class EitherCodec<a> implements EitherDecoder<a> {
+export default class Either<a> implements EitherDecoder<a> {
   type: "Either" = "Either"
   either: Array<Decoder<a>>
   constructor(decoders: Array<Decoder<a>>) {

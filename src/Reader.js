@@ -2,17 +2,17 @@
 
 import type { Decoder, Decode } from "./Decoder/Decoder"
 
-import FloatCodec from "./Decoder/Float"
-import IntegerCodec from "./Decoder/Integer"
-import StringCodec from "./Decoder/String"
-import BooleanCodec from "./Decoder/Boolean"
+import Float from "./Decoder/Float"
+import Integer from "./Decoder/Integer"
+import String from "./Decoder/String"
+import Boolean from "./Decoder/Boolean"
 import Maybe from "./Decoder/Maybe"
-import RecordCodec from "./Decoder/Record"
 import Optional from "./Decoder/Optional"
+import Record from "./Decoder/Record"
 import Form from "./Decoder/Form"
 import Array from "./Decoder/Array"
 import Accessor from "./Decoder/Accessor"
-import DictionaryCodec from "./Decoder/Dictionary"
+import Dictionary from "./Decoder/Dictionary"
 import Either from "./Decoder/Either"
 import Field from "./Decoder/Field"
 import Null from "./Decoder/Null"
@@ -35,7 +35,7 @@ export const read = <a>(decoder: Decoder<a>, input: mixed): Decode<a> => {
       return Array.read(decoder, input)
     }
     case "Dictionary": {
-      return DictionaryCodec.read(decoder, input)
+      return Dictionary.read(decoder, input)
     }
     case "Maybe": {
       return Maybe.read(decoder, input)
@@ -44,19 +44,19 @@ export const read = <a>(decoder: Decoder<a>, input: mixed): Decode<a> => {
       return Optional.read(decoder, input)
     }
     case "Float": {
-      return FloatCodec.read(decoder, input)
+      return Float.read(decoder, input)
     }
     case "Integer": {
-      return IntegerCodec.read(decoder, input)
+      return Integer.read(decoder, input)
     }
     case "String": {
-      return StringCodec.read(decoder, input)
+      return String.read(decoder, input)
     }
     case "Boolean": {
-      return BooleanCodec.read(decoder, input)
+      return Boolean.read(decoder, input)
     }
     case "Record": {
-      return RecordCodec.read(decoder, input)
+      return Record.read(decoder, input)
     }
     case "Form": {
       return Form.read(decoder, input)

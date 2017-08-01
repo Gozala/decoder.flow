@@ -26,7 +26,7 @@ export interface AccessorDecoder<a> {
   accessor: Decoder<a>
 }
 
-export default class AccessorCodec<a> implements AccessorDecoder<a> {
+export default class Accessor<a> implements AccessorDecoder<a> {
   type: "Accessor" = "Accessor"
   name: string
   accessor: Decoder<a>
