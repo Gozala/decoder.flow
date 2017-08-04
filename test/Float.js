@@ -23,18 +23,3 @@ testDecode(
   },
   key => Result.error(`Expecting a Float but instead got: \`${key}\``)
 )
-
-test("Decoder.toFloat", async test => {
-  test.equal(Decoder.toFloat(9.99999), 9.99999)
-  test.equal(Decoder.toFloat(9.00001), 9.00001)
-  test.equal(Decoder.toFloat(0), 0)
-  test.equal(Decoder.toFloat(0.1), 0.1)
-  test.equal(Decoder.toFloat(-98), -98)
-  test.equal(Decoder.toFloat(-98.989), -98.989)
-  test.equal(Decoder.toFloat(-98.0000001), -98.0000001)
-  test.equal(Decoder.toFloat(NaN), 0)
-  test.equal(Decoder.toFloat(Infinity), Number.MAX_VALUE)
-  test.equal(Decoder.toFloat(+Infinity), Number.MAX_VALUE)
-  test.equal(Decoder.toFloat(-Infinity), Number.MIN_VALUE)
-  test.equal(Decoder.toFloat(10 / 0), Number.MAX_VALUE)
-})

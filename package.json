@@ -23,8 +23,8 @@
     "babel-preset-flow-node": "^1.0.2",
     "babel-register": "6.24.1",
     "blue-tape": "^1.0.0",
-    "documentation": "^5.0.1",
-    "flow-bin": "^0.51.1",
+    "documentation": "^5.1.1",
+    "flow-bin": "^0.52.0",
     "flow-copy-source": "^1.2.0",
     "husky": "^0.14.0",
     "jsdom-quokka-plugin": "^1.0.5",
@@ -52,8 +52,10 @@
     ]
   },
   "dependencies": {
-    "corrupt": "^0.1.1",
-    "result.flow": "^0.2.0"
+    "float.flow": "^0.1.1",
+    "integer.flow": "^0.1.0",
+    "result.flow": "^0.2.0",
+    "unreachable": "^0.2.0"
   },
   "quokka": {
     "alias": {

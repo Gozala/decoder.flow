@@ -53,7 +53,7 @@ Decoder.decode(Decoder.Boolean, {hello:42}) //>  Result.Error Expecting a Boolea
 
 #### `Decoder.Float:Decoder.Decoder<Decoder.float>`
 
-Decoder that decodes JSON number into a `Decoder.float` value, which is an [opaque type alias][] for `number` type. Given that `Infinity` and `NaN` are numbers (or not) in JS and footguns in practice it seemed more appropriate to provide a decoder that decodes to a number that is finite and is not a not a number :)
+Decoder that decodes JSON number into a `Decoder.float` value, which is an [opaque type alias][] for `number` type. Note that while (`-`)`Infinity` and `NaN` are valid `float` type values they aren't valid JSON numbers & this decoder will error decoding them. *If you find yourself needing a way to decode as `NaN` or `Infinity` think twice and if you're absolutely sure let us know in an issue & given a convincing use case we'll add decoders for them*.
 
 ```js
 Decoder.decode(Decoder.Float, 42) //> Result.Ok 42
@@ -67,7 +67,7 @@ Decoder.decode(Decoder.Float, {hello:42}) //> Result.Error Expecting a Float but
 
 #### `Decoder.Integer:Decoder.Decoder<Decoder.integer>`
 
-Decoder that decodes JSON number into a `Decoder.integer` value, which is an [opaque type alias][] for `number` type guaranteed to be an integer (passing it to `Number.isInteger` returns `true`) and there for excludes (`+/-`)`Infinity` and `NaN`:
+Decoder that decodes JSON number into a `Decoder.integer` value, which is an [opaque type alias][] for `number` type guaranteed to be an integer (passing it to `Number.isInteger` returns `true`) and there for it excludes (`-`)`Infinity` and `NaN`:
 
 ```js
 Decoder.decode(Decoder.Integer, 42) //> Ok 42

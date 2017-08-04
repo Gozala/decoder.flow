@@ -21,7 +21,7 @@ import Ok from "./Decoder/Ok"
 import Index from "./Decoder/Index"
 import Error from "./Decoder/Error"
 
-import corrupt from "corrupt"
+import unreachable from "unreachable"
 
 export const read = <a>(decoder: Decoder<a>, input: mixed): Decode<a> => {
   switch (decoder.type) {
@@ -80,7 +80,7 @@ export const read = <a>(decoder: Decoder<a>, input: mixed): Decode<a> => {
       return Undefined.read(decoder, input)
     }
     default: {
-      return corrupt(decoder)
+      return unreachable(decoder)
     }
   }
 }

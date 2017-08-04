@@ -117,6 +117,3 @@ export const optional = <a>(decoder: Decoder<a>): Decoder<?a> =>
 export const annul = <a>(value: a): Decoder<a> => new Null(value)
 
 export const avoid = <a>(value: a): Decoder<a> => new Undefined(value)
-
-export const toInteger = IntegerDecoder.toInteger
-export const toFloat = FloatDecoder.toFloat
