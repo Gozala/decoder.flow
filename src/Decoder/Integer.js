@@ -4,29 +4,24 @@ import type { Decoder, Decode } from "./Decoder"
 import type { integer } from "integer.flow"
 import { truncate } from "integer.flow"
 import { TypeError } from "./Error"
-import Read from "../Reader/Read"
 
 export type { integer }
 
-export interface IntegerDecoder<a> {
-  type: "Integer"
+export interface IntegerDecoder {
+  type: "Integer";
 }
 
-const read = Read((decoder: Decoder<integer>, input: mixed): Decode<
-  integer
-> => {
-  // Note that if `Number.isInteger(x)` returns `true` we know that `x` is an
-  // integer number, but flow can not infer that, there for we trick flow into
-  // thinking we also perform typeof input === "number" so it can narrow down
-  // type to a number.
-  if (Number.isInteger(input) && typeof input === "number") {
-    return (truncate(input): any)
-  } else {
-    return new TypeError("Integer", input)
-  }
-})
-
-export default class Integer implements IntegerDecoder<integer> {
+export default class Integer implements IntegerDecoder {
   type = "Integer"
-  static read = read
+  static read(decoder: Decoder<integer>, input: mixed): Decode<integer> {
+    // Note that if `Number.isInteger(x)` returns `true` we know that `x` is an
+    // integer number, but flow can not infer that, there for we trick flow into
+    // thinking we also perform typeof input === "number" so it can narrow down
+    // type to a number.
+    if (Number.isInteger(input) && typeof input === "number") {
+      return (truncate(input): any)
+    } else {
+      return new TypeError("Integer", input)
+    }
+  }
 }

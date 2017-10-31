@@ -1,6 +1,15 @@
 /* @flow */
 
 import type { Decoder, Decode } from "./Decoder/Decoder"
+import type { FloatDecoder, float } from "./Decoder/Float"
+import type { IntegerDecoder, integer } from "./Decoder/Integer"
+import type { StringDecoder } from "./Decoder/String"
+import type { BooleanDecoder } from "./Decoder/Boolean"
+import type { MaybeDecoder } from "./Decoder/Maybe"
+import type { OptionalDecoder } from "./Decoder/Optional"
+import type { ArrayDecoder } from "./Decoder/Array"
+import type { RecordDecoder } from "./Decoder/Record"
+import type { DictionaryDecoder, Dictionary } from "./Decoder/Dictionary"
 
 import Float from "./Decoder/Float"
 import Integer from "./Decoder/Integer"
@@ -12,7 +21,7 @@ import Record from "./Decoder/Record"
 import Form from "./Decoder/Form"
 import Array from "./Decoder/Array"
 import Accessor from "./Decoder/Accessor"
-import Dictionary from "./Decoder/Dictionary"
+import Dict from "./Decoder/Dictionary"
 import Either from "./Decoder/Either"
 import Field from "./Decoder/Field"
 import Null from "./Decoder/Null"
@@ -32,34 +41,34 @@ export const read = <a>(decoder: Decoder<a>, input: mixed): Decode<a> => {
       return Either.read(decoder, input)
     }
     case "Array": {
-      return Array.read(decoder, input)
+      return (Array.read(decoder, input): any)
     }
     case "Dictionary": {
-      return Dictionary.read(decoder, input)
+      return (Dict.read(decoder, input): any)
     }
     case "Maybe": {
-      return Maybe.read(decoder, input)
+      return (Maybe.read(decoder, input): any)
     }
     case "Optional": {
-      return Optional.read(decoder, input)
+      return (Optional.read(decoder, input): any)
     }
     case "Float": {
-      return Float.read(decoder, input)
+      return (Float.read(decoder, input): any)
     }
     case "Integer": {
-      return Integer.read(decoder, input)
+      return (Integer.read(decoder, input): any)
     }
     case "String": {
-      return String.read(decoder, input)
+      return (String.read(decoder, input): any)
     }
     case "Boolean": {
-      return Boolean.read(decoder, input)
+      return (Boolean.read(decoder, input): any)
     }
     case "Record": {
-      return Record.read(decoder, input)
+      return (Record.read((decoder: any), input): any)
     }
     case "Form": {
-      return Form.read(decoder, input)
+      return (Form.read((decoder: any), input): any)
     }
     case "Error": {
       return Error.read(decoder, input)

@@ -99,20 +99,23 @@ export const accessor = <a>(name: string, decoder: Decoder<a>): Decoder<a> =>
 export const either = <a>(...decoders: Decoder<a>[]): Decoder<a> =>
   new Either(decoders)
 
-export const maybe = <a>(decoder: Decoder<a>): Decoder<?a> => new Maybe(decoder)
+export const maybe = <a>(decoder: Decoder<a>): Decoder<?a> =>
+  (new Maybe(decoder): Decoder<?a>)
 
 export const array = <a>(decoder: Decoder<a>): Decoder<a[]> =>
-  new ArrayDecoder(decoder)
+  (new ArrayDecoder(decoder): Decoder<a[]>)
 
 export const dictionary = <a>(decoder: Decoder<a>): Decoder<Dictionary<a>> =>
-  new DictionaryDecoder(decoder)
+  (new DictionaryDecoder(decoder): Decoder<Dictionary<a>>)
 
-export const form = <a: {}>(fields: a): Record<a> => new Form(fields)
+export const form = <a: {}>(fields: a): Record<a> =>
+  (new Form(fields): Record<a>)
 
-export const record = <a: {}>(fields: a): Record<a> => new RecordDecoder(fields)
+export const record = <a: {}>(fields: a): Record<a> =>
+  (new RecordDecoder(fields): Record<a>)
 
 export const optional = <a>(decoder: Decoder<a>): Decoder<?a> =>
-  new Optional(decoder)
+  (new Optional(decoder): Decoder<?a>)
 
 export const annul = <a>(value: a): Decoder<a> => new Null(value)
 

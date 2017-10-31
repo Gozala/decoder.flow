@@ -3,7 +3,6 @@
 import type { Decoder, Decode } from "./Decoder"
 import { Error, TypeError, ThrownError } from "./Error"
 import * as Reader from "../Reader"
-import Read from "../Reader/Read"
 
 export class IndexError extends Error {
   name = "IndexError"
@@ -21,9 +20,9 @@ export class IndexError extends Error {
 }
 
 export interface IndexDecoder<a> {
-  type: "Index",
-  index: number,
-  member: Decoder<a>
+  type: "Index";
+  index: number;
+  member: Decoder<a>;
 }
 
 export default class Index<a> implements IndexDecoder<a> {

@@ -24,7 +24,7 @@
     "babel-register": "6.24.1",
     "blue-tape": "^1.0.0",
     "documentation": "^5.1.1",
-    "flow-bin": "^0.52.0",
+    "flow-bin": "^0.57.3",
     "flow-copy-source": "^1.2.0",
     "husky": "^0.14.0",
     "jsdom-quokka-plugin": "^1.0.5",
@@ -39,11 +39,13 @@
     "build:types": "flow-copy-source --verbose src lib",
     "build:node": "babel --out-dir lib src",
     "build:api": "documentation readme --section=API src/Decoder.js",
-    "build:docs": "documentation build --document-exported src/** -f html --o docs",
+    "build:docs":
+      "documentation build --document-exported src/** -f html --o docs",
     "build": "npm run build:node && npm run build:types",
     "prepublish": "npm run build && npm test",
     "precommit": "lint-staged",
-    "start": "flow-copy-source --watch --verbose src lib & babel --watch --out-dir lib src"
+    "start":
+      "flow-copy-source --watch --verbose src lib & babel --watch --out-dir lib src"
   },
   "lint-staged": {
     "*.js": ["prettier --parser flow --no-semi --write", "git add"]

@@ -23,7 +23,26 @@ import type { Error } from "./Error"
 
 export type Decode<a> = a | Error
 
-export type Decoder<a> =
+export type Decoder<a> = SimpleDecoder<a> | ComplexDecoder<a> | ObjectDecoder<a>
+
+type ComplexDecoder<a> = $Call<
+  (<b>(b[]) => ArrayDecoder<b>) &
+    (<b>(Dictionary<b>) => DictionaryDecoder<b>) &
+    // (<b: {}>(b) => RecordDecoder<a> | FormDecoder<a>) &
+    (string => StringDecoder) &
+    (boolean => BooleanDecoder) &
+    (float => FloatDecoder) &
+    (integer => IntegerDecoder) &
+    (<b>(?b) => MaybeDecoder<b> | OptionalDecoder<b>),
+  a
+>
+
+export type ObjectDecoder<a> = $Call<
+  (<b: {}>(b) => RecordDecoder<b> | FormDecoder<b>) & (a => empty),
+  a
+>
+
+export type SimpleDecoder<a> =
   | AccessorDecoder<a>
   | EitherDecoder<a>
   | ErrorDecoder
@@ -32,13 +51,3 @@ export type Decoder<a> =
   | IndexDecoder<a>
   | NullDecoder<a>
   | UndefinedDecoder<a>
-  | BooleanDecoder<a>
-  | FloatDecoder<a>
-  | IntegerDecoder<a>
-  | StringDecoder<a>
-  | OptionalDecoder<*>
-  | MaybeDecoder<*>
-  | ArrayDecoder<*>
-  | DictionaryDecoder<*>
-  | RecordDecoder<a>
-  | FormDecoder<a>
