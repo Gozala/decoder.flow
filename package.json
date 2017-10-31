@@ -1,5 +1,5 @@
 {
-  "version": "0.2.0",
+  "version": "0.3.0",
   "name": "decoder.flow",
   "description": "Library for turning arbitrary input into a typed data.",
   "keywords": [
