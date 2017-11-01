@@ -1,6 +1,6 @@
 /* @flow */
 
-import type { RecordDecoder, Record } from "./Record"
+import type { RecordDecoder } from "./Record"
 import type { FormDecoder } from "./Form"
 import type { AccessorDecoder } from "./Accessor"
 import type { EitherDecoder } from "./Either"
@@ -18,8 +18,7 @@ import type { BooleanDecoder } from "./Boolean"
 import type { MaybeDecoder } from "./Maybe"
 import type { OptionalDecoder } from "./Optional"
 import type { ArrayDecoder } from "./Array"
-import type { DictionaryDecoder, Dictionary } from "./Dictionary"
-import type { Error } from "./Error"
+import type { DictionaryDecoder } from "./Dictionary"
 
 export type Decode<a> = a | Error
 
@@ -36,9 +35,92 @@ export type Decoder<a> =
   | FloatDecoder<a>
   | IntegerDecoder<a>
   | StringDecoder<a>
-  | OptionalDecoder<*>
-  | MaybeDecoder<*>
-  | ArrayDecoder<*>
-  | DictionaryDecoder<*>
+  | OptionalDecoder<*, a>
+  | MaybeDecoder<*, a>
+  | ArrayDecoder<*, a>
+  | DictionaryDecoder<*, a>
   | RecordDecoder<a>
   | FormDecoder<a>
+
+import Float from "./Float"
+import Integer from "./Integer"
+import String from "./String"
+import Boolean from "./Boolean"
+import Maybe from "./Maybe"
+import Optional from "./Optional"
+import Record from "./Record"
+import Form from "./Form"
+import Array from "./Array"
+import Accessor from "./Accessor"
+import Dictionary from "./Dictionary"
+import Either from "./Either"
+import Field from "./Field"
+import Null from "./Null"
+import Undefined from "./Undefined"
+import Ok from "./Ok"
+import Index from "./Index"
+import Error from "./Error"
+
+import unreachable from "unreachable"
+
+export const decode = <a>(decoder: Decoder<a>, input: mixed): Decode<a> => {
+  switch (decoder.type) {
+    case "Accessor": {
+      return Accessor.decode(decoder.name, decoder.accessor, input)
+    }
+    case "Either": {
+      return Either.decode(decoder.either, input)
+    }
+    case "Array": {
+      return (Array.decode(decoder.array, input): any)
+    }
+    case "Dictionary": {
+      return (Dictionary.decode(decoder.dictionary, input): any)
+    }
+    case "Maybe": {
+      return (Maybe.decode(decoder.maybe, input): any)
+    }
+    case "Optional": {
+      return (Optional.decode(decoder.optional, input): any)
+    }
+    case "Float": {
+      return (Float.decode(input): any)
+    }
+    case "Integer": {
+      return (Integer.decode(input): any)
+    }
+    case "String": {
+      return (String.decode(input): any)
+    }
+    case "Boolean": {
+      return (Boolean.decode(input): any)
+    }
+    case "Record": {
+      return (Record.decode((decoder.fields: any), input): any)
+    }
+    case "Form": {
+      return (Form.decode((decoder.form: any), input): any)
+    }
+    case "Error": {
+      return Error.decode(decoder, input)
+    }
+    case "Ok": {
+      return Ok.decode(decoder.value, input)
+    }
+    case "Field": {
+      return Field.decode(decoder.name, decoder.field, input)
+    }
+    case "Index": {
+      return Index.decode(decoder.index, decoder.member, input)
+    }
+    case "Null": {
+      return Null.decode(decoder.Null, input)
+    }
+    case "Undefined": {
+      return Undefined.decode(decoder.Undefined, input)
+    }
+    default: {
+      return unreachable(decoder)
+    }
+  }
+}

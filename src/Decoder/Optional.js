@@ -2,31 +2,28 @@
 
 import type { Decoder, Decode } from "./Decoder"
 import { Error } from "./Error"
-import * as Reader from "../Reader"
-import Read from "../Reader/Read"
+import * as Variant from "./Decoder"
 
-export interface OptionalDecoder<a> {
-  type: "Optional",
-  optional: Decoder<a>
+export interface OptionalDecoder<a = *, optional = ?a> {
+  type: "Optional";
+  optional: Decoder<a>;
 }
-
-const read = Read(<a>(self: OptionalDecoder<a>, input: mixed): Decode<?a> => {
-  const value = Reader.read(self.optional, input)
-  if (value instanceof Error) {
-    if (input == null) {
-      return null
-    } else {
-      return value
-    }
-  } else {
-    return value
-  }
-})
 
 export default class Optional<a> implements OptionalDecoder<a> {
   type: "Optional" = "Optional"
   optional: Decoder<a>
-  static read = read
+  static decode<a>(decoder: Decoder<a>, input: mixed): Decode<?a> {
+    const value = Variant.decode(decoder, input)
+    if (value instanceof Error) {
+      if (input == null) {
+        return null
+      } else {
+        return value
+      }
+    } else {
+      return value
+    }
+  }
   constructor(decoder: Decoder<a>) {
     this.optional = decoder
   }

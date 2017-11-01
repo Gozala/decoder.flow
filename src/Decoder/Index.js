@@ -2,8 +2,7 @@
 
 import type { Decoder, Decode } from "./Decoder"
 import { Error, TypeError, ThrownError } from "./Error"
-import * as Reader from "../Reader"
-import Read from "../Reader/Read"
+import * as Variant from "./Decoder"
 
 export class IndexError extends Error {
   name = "IndexError"
@@ -21,9 +20,9 @@ export class IndexError extends Error {
 }
 
 export interface IndexDecoder<a> {
-  type: "Index",
-  index: number,
-  member: Decoder<a>
+  type: "Index";
+  index: number;
+  member: Decoder<a>;
 }
 
 export default class Index<a> implements IndexDecoder<a> {
@@ -34,14 +33,14 @@ export default class Index<a> implements IndexDecoder<a> {
     this.index = index
     this.member = member
   }
-  static read({ index, member }: IndexDecoder<a>, input: mixed): Decode<a> {
+  static decode(index: number, member: Decoder<a>, input: mixed): Decode<a> {
     if (!Array.isArray(input)) {
       return new TypeError("array", input)
     } else if (index >= input.length) {
       return new TypeError(`longer (>=${index + 1}) array`, input)
     } else {
       try {
-        const value = Reader.read(member, input[index])
+        const value = Variant.decode(member, input[index])
         if (value instanceof Error) {
           return new IndexError(index, value)
         } else {

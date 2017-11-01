@@ -2,7 +2,7 @@
 
 import type { Decoder, Decode } from "./Decoder"
 import { Error } from "./Error"
-import * as Reader from "../Reader"
+import * as Variant from "./Decoder"
 
 export class EitherError extends Error {
   name = "EitherError"
@@ -23,8 +23,8 @@ export class EitherError extends Error {
 }
 
 export interface EitherDecoder<a> {
-  type: "Either",
-  either: Array<Decoder<a>>
+  type: "Either";
+  either: Array<Decoder<a>>;
 }
 
 export default class Either<a> implements EitherDecoder<a> {
@@ -33,10 +33,10 @@ export default class Either<a> implements EitherDecoder<a> {
   constructor(decoders: Array<Decoder<a>>) {
     this.either = decoders
   }
-  static read<a>({ either }: EitherDecoder<a>, input: mixed): Decode<a> {
+  static decode<a>(either: Decoder<a>[], input: mixed): Decode<a> {
     let problems = null
     for (let decoder of either) {
-      const value = Reader.read(decoder, input)
+      const value = Variant.decode(decoder, input)
       if (value instanceof Error) {
         problems = problems == null ? [value] : (problems.push(value), problems)
       } else {

@@ -3,8 +3,8 @@
 const anArticle = /^(a|e[^u]|i|o|u)/i
 
 export interface ErrorDecoder {
-  type: "Error",
-  +message: string
+  type: "Error";
+  +message: string;
 }
 
 export class Error implements ErrorDecoder {
@@ -12,7 +12,7 @@ export class Error implements ErrorDecoder {
   description: string
   name: string = "Error"
   type = "Error"
-  static read<a>(decoder: ErrorDecoder, input: mixed): Error {
+  static decode<a>(decoder: ErrorDecoder, input: mixed): Error {
     if (decoder instanceof Error) {
       return decoder
     } else {
