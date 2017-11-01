@@ -2,7 +2,7 @@
 
 import type { Decoder, Decode } from "./Decoder"
 import { TypeError, ThrownError, Error } from "./Error"
-import * as Reader from "../Reader"
+import * as Variant from "./Decoder"
 
 export class FieldError extends Error {
   name = "FieldError"
@@ -20,9 +20,9 @@ export class FieldError extends Error {
 }
 
 export interface FieldDecoder<a> {
-  type: "Field",
-  name: string,
-  field: Decoder<a>
+  type: "Field";
+  name: string;
+  field: Decoder<a>;
 }
 
 export default class Field<a> implements FieldDecoder<a> {
@@ -33,7 +33,7 @@ export default class Field<a> implements FieldDecoder<a> {
     this.name = name
     this.field = field
   }
-  static read({ name, field }: FieldDecoder<a>, input: mixed): Decode<a> {
+  static decode(name: string, field: Decoder<a>, input: mixed): Decode<a> {
     switch (typeof input) {
       case "function":
       case "object": {
@@ -41,7 +41,7 @@ export default class Field<a> implements FieldDecoder<a> {
           break
         } else {
           try {
-            const value = Reader.read(field, input[name])
+            const value = Variant.decode(field, input[name])
             if (value instanceof Error) {
               if (name in (input: Object)) {
                 return new FieldError(name, value)

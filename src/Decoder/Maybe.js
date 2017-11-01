@@ -2,9 +2,9 @@
 
 import type { Decoder, Decode } from "./Decoder"
 import { Error } from "./Error"
-import * as Reader from "../Reader"
+import * as Variant from "./Decoder"
 
-export interface MaybeDecoder<a> {
+export interface MaybeDecoder<a = *, maybe = ?a> {
   type: "Maybe";
   maybe: Decoder<a>;
 }
@@ -12,11 +12,8 @@ export interface MaybeDecoder<a> {
 export default class Maybe<a> implements MaybeDecoder<a> {
   type: "Maybe" = "Maybe"
   maybe: Decoder<a>
-  constructor(decoder: Decoder<a>) {
-    this.maybe = decoder
-  }
-  static read<a>({ maybe }: MaybeDecoder<a>, input: mixed): Decode<?a> {
-    const value = Reader.read(maybe, input)
+  static decode<a>(decoder: Decoder<a>, input: mixed): Decode<?a> {
+    const value = Variant.decode(decoder, input)
     if (value instanceof Error) {
       if (input == null) {
         return value
@@ -26,5 +23,8 @@ export default class Maybe<a> implements MaybeDecoder<a> {
     } else {
       return value
     }
+  }
+  constructor(decoder: Decoder<a>) {
+    this.maybe = decoder
   }
 }

@@ -25,7 +25,7 @@ import Ok from "./Decoder/Ok"
 import Index from "./Decoder/Index"
 import Error from "./Decoder/Error"
 
-import * as Reader from "./Reader"
+import * as Variant from "./Decoder/Decoder"
 import * as result from "result.flow"
 
 export type Result<a> = result.Result<Error, a>
@@ -64,7 +64,7 @@ export const parse = <a>(decoder: Decoder<a>, input: string): Result<a> => {
  * a `Result.Ok<a>`.
  */
 export const decode = <a>(decoder: Decoder<a>, json: mixed): Result<a> => {
-  const value = Reader.read(decoder, json)
+  const value = Variant.decode(decoder, json)
   if (value instanceof Error) {
     return result.error(value)
   } else {

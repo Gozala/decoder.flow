@@ -7,13 +7,13 @@ import { toFloat } from "float.flow"
 
 export type { float }
 
-export interface FloatDecoder {
+export interface FloatDecoder<a = float> {
   type: "Float";
 }
 
-export default class Float implements FloatDecoder {
+export default class Float implements FloatDecoder<float> {
   type = "Float"
-  static read(decoder: Decoder<float>, input: mixed): Decode<float> {
+  static decode(input: mixed): Decode<float> {
     // Note that if `Number.isFinite(x)` returns `true` we know that `x` is a
     // finite number, but flow can't infer it there for we trick flow into
     // thinking that we also check typeof input === "number" so it will narrow

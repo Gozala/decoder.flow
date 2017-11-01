@@ -3,11 +3,11 @@
 import type { Decoder, Decode } from "./Decoder"
 import { TypeError, ThrownError, Error } from "./Error"
 import { FieldError } from "./Field"
-import * as Reader from "../Reader"
+import * as Variant from "./Decoder"
 
 export type Dictionary<a> = { [string]: a }
 
-export interface DictionaryDecoder<a> {
+export interface DictionaryDecoder<a = *, dict = Dictionary<a>> {
   type: "Dictionary";
   dictionary: Decoder<a>;
 }
@@ -18,18 +18,14 @@ export default class DictionaryReader<a> implements DictionaryDecoder<a> {
   constructor(decoder: Decoder<a>) {
     this.dictionary = decoder
   }
-  static read<a>(
-    self: DictionaryDecoder<a>,
-    input: mixed
-  ): Decode<Dictionary<a>> {
-    const valueDecoder = self.dictionary
+  static decode<a>(decoder: Decoder<a>, input: mixed): Decode<Dictionary<a>> {
     if (typeof input !== "object" || input === null || Array.isArray(input)) {
       return new TypeError("object", input)
     } else {
       const dictionary: Dictionary<a> = (Object.create(null): Object)
       for (let key in input) {
         try {
-          const value = Reader.read(valueDecoder, input[key])
+          const value = Variant.decode(decoder, input[key])
           if (value instanceof Error) {
             return new FieldError(key, value)
           } else {
