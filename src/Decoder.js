@@ -4,7 +4,7 @@ import type { Decode, Decoder } from "./Decoder/Decoder"
 import type { float } from "./Decoder/Float"
 import type { integer } from "./Decoder/Integer"
 import type { Dictionary } from "./Decoder/Dictionary"
-import type { Record } from "./Decoder/Record"
+import type { Record, Fields } from "./Decoder/Record"
 
 import StringDecoder from "./Decoder/String"
 import BooleanDecoder from "./Decoder/Boolean"
@@ -29,7 +29,16 @@ import * as Variant from "./Decoder/Decoder"
 import * as result from "result.flow"
 
 export type Result<a> = result.Result<Error, a>
-export type { Decoder, Decode, float, integer, Record, Dictionary, Error }
+export type {
+  Decoder,
+  Decode,
+  float,
+  integer,
+  Record,
+  Fields,
+  Dictionary,
+  Error
+}
 
 class ParseError extends Error {
   name = "ParseError"
