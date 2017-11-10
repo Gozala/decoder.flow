@@ -1,4 +1,4 @@
-/* @noflow */
+/* @flow */
 
 var _ = $ => {
   if ($) {
@@ -343,3 +343,24 @@ Decoder.decode(
 // ```
 
 // [opaque type alias]:https://flow.org/en/docs/types/opaque-types/
+
+Decoder.decode(Decoder.match(2), "2") //?$.error.message
+Decoder.decode(Decoder.match([1, 2]), []) //?$.error.message
+Decoder.decode(Decoder.match([1, 2]), [1, 2, 3]) //?
+Decoder.decode(Decoder.match([1, 2]), [1, 2]) //?
+Decoder.decode(Decoder.match([1, 2]), {}) //?$.error.message
+Decoder.decode(Decoder.match({}), { a: 1 }) //?
+Decoder.decode(Decoder.match({ b: 2 }), { a: 1 }) //?$.error.message
+Decoder.decode(Decoder.match({ b: 2 }), { a: 1, b: 2 }) //?
+
+const cancel = Decoder.ok(null)
+const keyCode = Decoder.field("keyCode", Decoder.ok(13))
+const value = Decoder.field("value", Decoder.String)
+// const enter = Decoder.and(
+//
+//   Decoder.field("value", Decoder.String)
+// )
+
+// const decodeEnter = Decoder.or(enter, cancel)
+
+Decoder.or(Decoder.and(keyCode, value), cancel)

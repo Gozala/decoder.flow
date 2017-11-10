@@ -24,7 +24,7 @@
     "babel-register": "6.24.1",
     "blue-tape": "^1.0.0",
     "documentation": "^5.1.1",
-    "flow-bin": "0.58.0",
+    "flow-bin": "0.59.0",
     "flow-copy-source": "^1.2.0",
     "husky": "^0.14.0",
     "jsdom-quokka-plugin": "^1.0.5",
