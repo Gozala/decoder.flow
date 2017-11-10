@@ -140,6 +140,23 @@ export class TypeError extends Error {
   }
 }
 
+export class MissmatchError extends Error {
+  expect: mixed
+  actual: mixed
+  constructor(actual: mixed, expect: mixed) {
+    super()
+    this.actual = actual
+    this.expect = expect
+  }
+  describe(context: string): string {
+    const where = this.where(context)
+    const actual = serialize(this.actual)
+    const expect = serialize(this.expect)
+
+    return `Expecting \`${expect}\`${where} but instead got: \`${actual}\``
+  }
+}
+
 export class ThrownError extends Error {
   name = "ThrowError"
   exception: { message: string }

@@ -23,6 +23,7 @@ import Null from "./Decoder/Null"
 import Undefined from "./Decoder/Undefined"
 import Ok from "./Decoder/Ok"
 import Index from "./Decoder/Index"
+import Match from "./Decoder/Match"
 import And from "./Decoder/And"
 import Error from "./Decoder/Error"
 
@@ -133,3 +134,5 @@ export const optional = <a>(decoder: Decoder<a>): Decoder<?a> =>
 export const annul = <a>(value: a): Decoder<a> => new Null(value)
 
 export const avoid = <a>(value: a): Decoder<a> => new Undefined(value)
+
+export const match = <a>(value: a): Decoder<a> => new Match(value)

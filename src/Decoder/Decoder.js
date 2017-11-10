@@ -65,6 +65,7 @@ import Ok from "./Ok"
 import Index from "./Index"
 import Error from "./Error"
 import And from "./And"
+import Match from "./Match"
 import unreachable from "unreachable"
 
 export const decode = <a>(decoder: Decoder<a>, input: mixed): Decode<a> => {
@@ -122,6 +123,9 @@ export const decode = <a>(decoder: Decoder<a>, input: mixed): Decode<a> => {
     }
     case "Undefined": {
       return Undefined.decode(decoder.Undefined, input)
+    }
+    case "Match": {
+      return Match.decode(decoder.match, input)
     }
     case "And": {
       return And.decode(decoder.left, decoder.right, input)
