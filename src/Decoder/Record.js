@@ -5,7 +5,7 @@ import { Error, TypeError, ThrownError } from "./Error"
 import { FieldError } from "./Field"
 import * as Variant from "./Decoder"
 
-export type Record<a> = Decoder<$ObjMap<a, <b>(Decoder<b>) => b>>
+export type Record<a> = Decoder<$Exact<$ObjMap<a, <b>(Decoder<b>) => b>>>
 export type Fields<a> = $ObjMap<a, <b>(b) => Decoder<b>> & {
   [string]: Decoder<*>
 }
