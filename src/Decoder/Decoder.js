@@ -22,7 +22,7 @@ import type { DictionaryDecoder } from "./Dictionary"
 
 export type Decode<a> = a | Error
 
-export type Decoder<a> =
+export type Decoder<+a> =
   | AccessorDecoder<a>
   | EitherDecoder<a>
   | ErrorDecoder

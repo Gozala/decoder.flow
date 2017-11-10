@@ -19,7 +19,7 @@ export class FieldError extends Error {
   }
 }
 
-export interface FieldDecoder<a> {
+export interface FieldDecoder<+a> {
   type: "Field";
   name: string;
   field: Decoder<a>;

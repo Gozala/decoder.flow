@@ -19,7 +19,7 @@ export class IndexError extends Error {
   }
 }
 
-export interface IndexDecoder<a> {
+export interface IndexDecoder<+a> {
   type: "Index";
   index: number;
   member: Decoder<a>;

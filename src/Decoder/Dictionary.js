@@ -7,7 +7,7 @@ import * as Variant from "./Decoder"
 
 export type Dictionary<a> = { [string]: a }
 
-export interface DictionaryDecoder<a = *, dict = Dictionary<a>> {
+export interface DictionaryDecoder<a = *, +dict = Dictionary<a>> {
   type: "Dictionary";
   dictionary: Decoder<a>;
 }

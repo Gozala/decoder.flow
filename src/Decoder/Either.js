@@ -22,7 +22,7 @@ export class EitherError extends Error {
   }
 }
 
-export interface EitherDecoder<a> {
+export interface EitherDecoder<+a> {
   type: "Either";
   either: Array<Decoder<a>>;
 }

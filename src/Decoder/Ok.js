@@ -2,7 +2,7 @@
 
 import type { Decoder, Decode } from "./Decoder"
 
-export interface OkDecoder<a> {
+export interface OkDecoder<+a> {
   type: "Ok";
   value: a;
 }

@@ -3,7 +3,7 @@
 import type { Decoder, Decode } from "./Decoder"
 import { TypeError } from "./Error"
 
-export interface UndefinedDecoder<a> {
+export interface UndefinedDecoder<+a> {
   type: "Undefined";
   Undefined: a;
 }

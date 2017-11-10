@@ -5,7 +5,7 @@ import { TypeError } from "./Error"
 
 const StringConstructor = "".constructor
 
-export interface StringDecoder<a = string> {
+export interface StringDecoder<+a = string> {
   type: "String";
 }
 

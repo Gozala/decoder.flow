@@ -4,7 +4,7 @@ import type { Decoder, Decode } from "./Decoder"
 import { Error } from "./Error"
 import * as Variant from "./Decoder"
 
-export interface MaybeDecoder<a = *, maybe = ?a> {
+export interface MaybeDecoder<a = *, +maybe = ?a> {
   type: "Maybe";
   maybe: Decoder<a>;
 }

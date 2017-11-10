@@ -5,7 +5,7 @@ import Error from "./Error"
 import * as Variant from "./Decoder"
 import type { Record, Fields } from "./Record"
 
-export interface FormDecoder<a> {
+export interface FormDecoder<+a> {
   type: "Form";
   form: Fields<a>;
 }

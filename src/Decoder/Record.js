@@ -10,7 +10,7 @@ export type Fields<a> = $ObjMap<a, <b>(b) => Decoder<b>> & {
   [string]: Decoder<*>
 }
 
-export interface RecordDecoder<a> {
+export interface RecordDecoder<+a> {
   type: "Record";
   fields: Fields<a>;
 }

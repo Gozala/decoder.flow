@@ -7,7 +7,7 @@ import { toFloat } from "float.flow"
 
 export type { float }
 
-export interface FloatDecoder<a = float> {
+export interface FloatDecoder<+a = float> {
   type: "Float";
 }
 

@@ -4,7 +4,7 @@ import type { Decoder, Decode } from "./Decoder"
 import { Error } from "./Error"
 import * as Variant from "./Decoder"
 
-export interface OptionalDecoder<a = *, optional = ?a> {
+export interface OptionalDecoder<a = *, +optional = ?a> {
   type: "Optional";
   optional: Decoder<a>;
 }

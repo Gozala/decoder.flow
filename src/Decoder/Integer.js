@@ -7,7 +7,7 @@ import { TypeError } from "./Error"
 
 export type { integer }
 
-export interface IntegerDecoder<a = integer> {
+export interface IntegerDecoder<+a = integer> {
   type: "Integer";
 }
 

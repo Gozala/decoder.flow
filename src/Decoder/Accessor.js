@@ -20,7 +20,7 @@ export class AccessorError extends Error {
   }
 }
 
-export interface AccessorDecoder<a> {
+export interface AccessorDecoder<+a> {
   type: "Accessor";
   name: string;
   accessor: Decoder<a>;

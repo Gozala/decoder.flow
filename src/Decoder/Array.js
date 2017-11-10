@@ -5,7 +5,7 @@ import { TypeError, Error } from "./Error"
 import { IndexError } from "./Index"
 import * as Variant from "./Decoder"
 
-export interface ArrayDecoder<a, array = a[]> {
+export interface ArrayDecoder<a, +array = a[]> {
   type: "Array";
   array: Decoder<a>;
 }

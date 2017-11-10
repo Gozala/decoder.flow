@@ -3,7 +3,7 @@
 import type { Decoder, Decode } from "./Decoder"
 import { TypeError } from "./Error"
 
-export interface BooleanDecoder<a = boolean> {
+export interface BooleanDecoder<+a = boolean> {
   type: "Boolean";
 }
 
