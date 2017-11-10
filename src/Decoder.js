@@ -110,6 +110,8 @@ export const accessor = <a>(name: string, decoder: Decoder<a>): Decoder<a> =>
 export const either = <a>(...decoders: Decoder<a>[]): Decoder<a> =>
   new Either(decoders)
 
+export const or = either
+
 export const and = <a, b>(left: Decoder<a>, right: Decoder<b>): Decoder<b> =>
   new And(left, right)
 
