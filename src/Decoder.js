@@ -23,6 +23,7 @@ import Null from "./Decoder/Null"
 import Undefined from "./Decoder/Undefined"
 import Ok from "./Decoder/Ok"
 import Index from "./Decoder/Index"
+import And from "./Decoder/And"
 import Error from "./Decoder/Error"
 
 import * as Variant from "./Decoder/Decoder"
@@ -107,6 +108,9 @@ export const accessor = <a>(name: string, decoder: Decoder<a>): Decoder<a> =>
 
 export const either = <a>(...decoders: Decoder<a>[]): Decoder<a> =>
   new Either(decoders)
+
+export const and = <a, b>(left: Decoder<a>, right: Decoder<b>): Decoder<b> =>
+  new And(left, right)
 
 export const maybe = <a>(decoder: Decoder<a>): Decoder<?a> =>
   (new Maybe(decoder): Decoder<?a>)

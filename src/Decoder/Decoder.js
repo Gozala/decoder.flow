@@ -19,6 +19,8 @@ import type { MaybeDecoder } from "./Maybe"
 import type { OptionalDecoder } from "./Optional"
 import type { ArrayDecoder } from "./Array"
 import type { DictionaryDecoder } from "./Dictionary"
+import type { MatchDecoder } from "./Match"
+import type { AndDecoder } from "./And"
 
 export type Decode<a> = a | Error
 
@@ -41,6 +43,8 @@ export type Decoder<+a> =
   | DictionaryDecoder<*, a>
   | RecordDecoder<a>
   | FormDecoder<a>
+  | AndDecoder<*, a>
+  | MatchDecoder<a>
 
 import Float from "./Float"
 import Integer from "./Integer"
@@ -60,7 +64,7 @@ import Undefined from "./Undefined"
 import Ok from "./Ok"
 import Index from "./Index"
 import Error from "./Error"
-
+import And from "./And"
 import unreachable from "unreachable"
 
 export const decode = <a>(decoder: Decoder<a>, input: mixed): Decode<a> => {
@@ -118,6 +122,9 @@ export const decode = <a>(decoder: Decoder<a>, input: mixed): Decode<a> => {
     }
     case "Undefined": {
       return Undefined.decode(decoder.Undefined, input)
+    }
+    case "And": {
+      return And.decode(decoder.left, decoder.right, input)
     }
     default: {
       return unreachable(decoder)
