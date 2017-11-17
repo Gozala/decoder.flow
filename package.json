@@ -1,5 +1,5 @@
 {
-  "version": "0.5.0",
+  "version": "0.5.1",
   "name": "decoder.flow",
   "description": "Library for turning arbitrary input into a typed data.",
   "keywords": [
@@ -39,17 +39,16 @@
     "build:types": "flow-copy-source --verbose src lib",
     "build:node": "babel --out-dir lib src",
     "build:api": "documentation readme --section=API src/Decoder.js",
-    "build:docs": "documentation build --document-exported src/** -f html --o docs",
+    "build:docs":
+      "documentation build --document-exported src/** -f html --o docs",
     "build": "npm run build:node && npm run build:types",
     "prepublish": "npm run build && npm test",
     "precommit": "lint-staged",
-    "start": "flow-copy-source --watch --verbose src lib & babel --watch --out-dir lib src"
+    "start":
+      "flow-copy-source --watch --verbose src lib & babel --watch --out-dir lib src"
   },
   "lint-staged": {
-    "*.js": [
-      "prettier --parser flow --no-semi --write",
-      "git add"
-    ]
+    "*.js": ["prettier --parser flow --no-semi --write", "git add"]
   },
   "dependencies": {
     "float.flow": "^0.1.2",
@@ -63,9 +62,6 @@
     },
     "pro": true,
     "babel": true,
-    "plugins": [
-      "jsdom-quokka-plugin",
-      "alias-quokka-plugin"
-    ]
+    "plugins": ["jsdom-quokka-plugin", "alias-quokka-plugin"]
   }
 }
